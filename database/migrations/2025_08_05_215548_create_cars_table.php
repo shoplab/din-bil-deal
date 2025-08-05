@@ -90,7 +90,10 @@ return new class extends Migration
             $table->index(['fuel_type', 'transmission']);
             $table->index(['status', 'featured', 'published_at']);
             $table->index(['mileage', 'year']);
-            $table->fullText(['make', 'model', 'variant', 'description']); // Full-text search
+            // Note: Full-text search removed for SQLite compatibility
+            $table->index(['make']);
+            $table->index(['model']);
+            $table->index(['variant']);
         });
     }
 
