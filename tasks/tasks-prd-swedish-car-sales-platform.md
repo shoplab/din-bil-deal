@@ -87,10 +87,10 @@
   - [x] 1.1 Create leads migration with all required fields (name, email, phone, source, status, assigned_agent_id, etc.)
   - [x] 1.2 Create cars migration with comprehensive vehicle data (make, model, year, price, mileage, specifications, etc.)
   - [x] 1.3 Create deals migration with pipeline tracking (lead_id, car_id, status, commission, notes, etc.)
-  - [ ] 1.4 Create needs_analysis migration for questionnaire responses (customer_id, responses JSON, compatibility_scores, etc.)
-  - [ ] 1.5 Create car_images migration for image management (car_id, image_path, alt_text, sort_order)
-  - [ ] 1.6 Create lead_activities migration for CRM tracking (lead_id, user_id, activity_type, description, timestamp)
-  - [ ] 1.7 Add role column to users table for Admin/Agent/Manager permissions
+  - [x] 1.4 Create needs_analysis migration for questionnaire responses (customer_id, responses JSON, compatibility_scores, etc.)
+  - [x] 1.5 Create car_images migration for image management (car_id, image_path, alt_text, sort_order)
+  - [x] 1.6 Create lead_activities migration for CRM tracking (lead_id, user_id, activity_type, description, timestamp)
+  - [x] 1.7 Add role column to users table for Admin/Agent/Manager permissions
   - [ ] 1.8 Create Lead model with relationships, scopes, and status management methods
   - [ ] 1.9 Create Car model with filtering scopes and specification handling
   - [ ] 1.10 Create Deal model with status transitions and commission calculations
