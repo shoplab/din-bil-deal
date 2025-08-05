@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -11,6 +12,16 @@ use Carbon\Carbon;
 
 class Lead extends Model
 {
+    use HasFactory;
+    
+    // Status constants
+    public const STATUS_NEW = 'new';
+    public const STATUS_CONTACTED = 'contacted';
+    public const STATUS_QUALIFIED = 'qualified';
+    public const STATUS_INTERESTED = 'interested';
+    public const STATUS_CONVERTED = 'converted';
+    public const STATUS_LOST = 'lost';
+    public const STATUS_UNRESPONSIVE = 'unresponsive';
     protected $fillable = [
         'name', 'email', 'phone', 'source', 'type', 'status', 'priority',
         'assigned_agent_id', 'created_by_id', 'description', 'preferences',
@@ -253,5 +264,19 @@ class Lead extends Model
             3 => 'Low',
             default => 'Normal'
         };
+    }
+    
+    // Static methods
+    public static function getAllStatuses(): array
+    {
+        return [
+            self::STATUS_NEW,
+            self::STATUS_CONTACTED,
+            self::STATUS_QUALIFIED,
+            self::STATUS_INTERESTED,
+            self::STATUS_CONVERTED,
+            self::STATUS_LOST,
+            self::STATUS_UNRESPONSIVE,
+        ];
     }
 }

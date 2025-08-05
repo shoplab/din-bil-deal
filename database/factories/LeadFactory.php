@@ -18,7 +18,7 @@ class LeadFactory extends Factory
      */
     public function definition(): array
     {
-        $sources = ['website', 'phone', 'email', 'referral', 'social_media', 'advertising', 'walk_in', 'partner'];
+        $sources = ['needs_analysis', 'car_deal_request', 'sell_car', 'website_contact'];
         $budgetRanges = [
             [50000, 150000],
             [100000, 250000], 
@@ -37,7 +37,8 @@ class LeadFactory extends Factory
             'email' => $this->faker->unique()->safeEmail(),
             'phone' => $this->generateSwedishPhone(),
             'source' => $this->faker->randomElement($sources),
-            'status' => $this->faker->randomElement(Lead::getAllStatuses()),
+            'type' => $this->faker->randomElement(['buy_car', 'sell_car', 'needs_analysis']),
+            'status' => $this->faker->randomElement(['open', 'in_process', 'waiting', 'finance', 'done', 'cancelled']),
             'assigned_agent_id' => $this->faker->optional(0.7)->randomElement(User::where('role', 'agent')->pluck('id')->toArray()),
             'budget_min' => $budgetRange[0],
             'budget_max' => $budgetRange[1],
@@ -49,10 +50,9 @@ class LeadFactory extends Factory
                 'max_age' => $this->faker->numberBetween(3, 15),
                 'min_year' => now()->year - $this->faker->numberBetween(3, 15)
             ],
-            'initial_message' => $this->generateSwedishMessage(),
-            'first_contact_date' => $this->faker->dateTimeBetween('-30 days', 'now'),
-            'last_contact_date' => $this->faker->optional(0.8)->dateTimeBetween('-7 days', 'now'),
-            'next_follow_up_date' => $this->faker->optional(0.6)->dateTimeBetween('now', '+14 days'),
+            'description' => $this->generateSwedishMessage(),
+            'first_contact_at' => $this->faker->dateTimeBetween('-30 days', 'now'),
+            'last_activity_at' => $this->faker->optional(0.8)->dateTimeBetween('-7 days', 'now'),
             'created_at' => $this->faker->dateTimeBetween('-60 days', 'now'),
             'updated_at' => $this->faker->dateTimeBetween('-7 days', 'now'),
         ];
@@ -88,7 +88,7 @@ class LeadFactory extends Factory
     public function qualified(): static
     {
         return $this->state(fn (array $attributes) => [
-            'status' => Lead::STATUS_QUALIFIED,
+            'status' => 'in_process',
             'lead_score' => $this->faker->numberBetween(60, 100),
             'assigned_agent_id' => User::where('role', 'agent')->inRandomOrder()->first()?->id,
         ]);
@@ -100,10 +100,10 @@ class LeadFactory extends Factory
     public function hot(): static
     {
         return $this->state(fn (array $attributes) => [
-            'status' => Lead::STATUS_INTERESTED,
+            'status' => 'finance',
             'lead_score' => $this->faker->numberBetween(80, 100),
             'assigned_agent_id' => User::where('role', 'agent')->inRandomOrder()->first()?->id,
-            'next_follow_up_date' => $this->faker->dateTimeBetween('now', '+3 days'),
+            'description' => 'Hot lead - high priority follow-up needed',
         ]);
     }
     
@@ -113,10 +113,9 @@ class LeadFactory extends Factory
     public function converted(): static
     {
         return $this->state(fn (array $attributes) => [
-            'status' => Lead::STATUS_CONVERTED,
+            'status' => 'done',
             'lead_score' => 100,
             'assigned_agent_id' => User::where('role', 'agent')->inRandomOrder()->first()?->id,
-            'converted_at' => $this->faker->dateTimeBetween('-30 days', 'now'),
         ]);
     }
     
@@ -126,9 +125,9 @@ class LeadFactory extends Factory
     public function lost(): static
     {
         return $this->state(fn (array $attributes) => [
-            'status' => Lead::STATUS_LOST,
+            'status' => 'cancelled',
             'lead_score' => $this->faker->numberBetween(0, 40),
-            'lost_reason' => $this->faker->randomElement([
+            'description' => $this->faker->randomElement([
                 'Pris för högt',
                 'Hittade bil någon annanstans', 
                 'Inte redo att köpa än',

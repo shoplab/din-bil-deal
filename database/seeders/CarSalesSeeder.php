@@ -121,7 +121,7 @@ class CarSalesSeeder extends Seeder
     
     private function createDealsAndActivities(): void
     {
-        $leads = Lead::whereIn('status', [Lead::STATUS_QUALIFIED, Lead::STATUS_INTERESTED, Lead::STATUS_CONVERTED])->get();
+        $leads = Lead::whereIn('status', ['in_process', 'finance', 'done'])->get();
         $cars = Car::where('status', 'available')->take(30)->get();
         $agents = User::where('role', 'agent')->get();
         
@@ -135,10 +135,10 @@ class CarSalesSeeder extends Seeder
                     'lead_id' => $lead->id,
                     'car_id' => $car->id,
                     'assigned_agent_id' => $agent->id,
-                    'status' => fake()->randomElement(Deal::getOpenStatuses()),
+                    'deal_type' => fake()->randomElement(['buy_car', 'sell_car', 'trade_in']),
+                    'status' => fake()->randomElement(['new', 'contacted', 'qualified', 'proposal_sent', 'negotiating', 'financing']),
                     'vehicle_price' => $car->price,
                     'commission_rate' => 0.01, // 1%
-                    'probability' => fake()->numberBetween(20, 90),
                     'expected_close_date' => fake()->dateTimeBetween('now', '+60 days'),
                 ]);
                 
@@ -146,7 +146,8 @@ class CarSalesSeeder extends Seeder
                 $this->createActivitiesForLead($lead, $agent, $deal);
                 
                 // Some leads might have needs analysis
-                if (fake()->boolean(60)) {
+                // TODO: Fix field mappings for needs analysis
+                /*if (fake()->boolean(60)) {
                     NeedsAnalysis::create([
                         'lead_id' => $lead->id,
                         'customer_name' => $lead->name,
@@ -176,7 +177,7 @@ class CarSalesSeeder extends Seeder
                         'status' => fake()->randomElement([NeedsAnalysis::STATUS_IN_PROGRESS, NeedsAnalysis::STATUS_COMPLETED]),
                         'completed_at' => fake()->boolean(70) ? fake()->dateTimeBetween('-30 days', 'now') : null,
                     ]);
-                }
+                }*/
             }
         }
     }
@@ -187,12 +188,12 @@ class CarSalesSeeder extends Seeder
         
         for ($i = 0; $i < $activityCount; $i++) {
             $activityType = fake()->randomElement([
-                LeadActivity::TYPE_CALL,
-                LeadActivity::TYPE_EMAIL,
-                LeadActivity::TYPE_MEETING,
-                LeadActivity::TYPE_VIEWING,
-                LeadActivity::TYPE_FOLLOW_UP,
-                LeadActivity::TYPE_NOTE,
+                'call_made',
+                'email_sent',
+                'meeting_scheduled',
+                'contacted',
+                'follow_up_scheduled',
+                'note_added',
             ]);
             
             $isCompleted = fake()->boolean(80); // 80% of activities are completed
@@ -203,21 +204,10 @@ class CarSalesSeeder extends Seeder
                 'user_id' => $agent->id,
                 'deal_id' => $deal?->id,
                 'activity_type' => $activityType,
-                'subject' => $this->generateActivitySubject($activityType),
+                'activity_title' => $this->generateActivitySubject($activityType),
                 'description' => fake()->optional(0.8)->text(200),
-                'activity_date' => $activityDate,
-                'status' => $isCompleted ? LeadActivity::STATUS_COMPLETED : LeadActivity::STATUS_PLANNED,
-                'completed_at' => $isCompleted ? $activityDate : null,
-                'priority' => fake()->randomElement(LeadActivity::getAllPriorities()),
-                'outcome' => $isCompleted ? fake()->randomElement([
-                    LeadActivity::OUTCOME_POSITIVE,
-                    LeadActivity::OUTCOME_NEUTRAL,
-                    LeadActivity::OUTCOME_INTERESTED,
-                    LeadActivity::OUTCOME_NEEDS_MORE_INFO
-                ]) : null,
-                'duration_minutes' => $activityType === LeadActivity::TYPE_CALL ? fake()->numberBetween(5, 45) : null,
-                'follow_up_required' => fake()->boolean(30),
-                'follow_up_date' => fake()->boolean(30) ? fake()->dateTimeBetween('now', '+7 days') : null,
+                'communication_method' => $activityType === 'call_made' ? 'phone' : ($activityType === 'email_sent' ? 'email' : null),
+                'completed_at' => $activityDate,
             ]);
         }
     }
@@ -263,6 +253,14 @@ class CarSalesSeeder extends Seeder
             ],
         ];
         
-        return fake()->randomElement($subjects[$activityType] ?? ['Aktivitet']);
+        return match($activityType) {
+            'call_made' => fake()->randomElement(['Uppföljningssamtal', 'Kontakt ang. bil', 'Telefonmöte']),
+            'email_sent' => fake()->randomElement(['Bilförslag skickat', 'Prisinformation', 'Svar på förfrågan']),
+            'meeting_scheduled' => fake()->randomElement(['Möte på showroom', 'Visning bokad', 'Leveransmöte']),
+            'contacted' => fake()->randomElement(['Kundkontakt', 'Initial kontakt', 'Uppföljning']),
+            'follow_up_scheduled' => fake()->randomElement(['Uppföljning planerad', 'Påminnelse', 'Kontroll']),
+            'note_added' => fake()->randomElement(['Anteckning', 'Intern notering', 'Viktiga detaljer']),
+            default => 'Aktivitet'
+        };
     }
 }
