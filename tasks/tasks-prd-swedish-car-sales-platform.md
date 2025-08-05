@@ -86,7 +86,7 @@
 - [ ] 1.0 Database Schema and Models Setup
   - [x] 1.1 Create leads migration with all required fields (name, email, phone, source, status, assigned_agent_id, etc.)
   - [x] 1.2 Create cars migration with comprehensive vehicle data (make, model, year, price, mileage, specifications, etc.)
-  - [ ] 1.3 Create deals migration with pipeline tracking (lead_id, car_id, status, commission, notes, etc.)
+  - [x] 1.3 Create deals migration with pipeline tracking (lead_id, car_id, status, commission, notes, etc.)
   - [ ] 1.4 Create needs_analysis migration for questionnaire responses (customer_id, responses JSON, compatibility_scores, etc.)
   - [ ] 1.5 Create car_images migration for image management (car_id, image_path, alt_text, sort_order)
   - [ ] 1.6 Create lead_activities migration for CRM tracking (lead_id, user_id, activity_type, description, timestamp)
