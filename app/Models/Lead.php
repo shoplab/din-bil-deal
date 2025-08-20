@@ -15,16 +15,15 @@ class Lead extends Model
     use HasFactory;
     
     // Status constants
-    public const STATUS_NEW = 'new';
-    public const STATUS_CONTACTED = 'contacted';
-    public const STATUS_QUALIFIED = 'qualified';
-    public const STATUS_INTERESTED = 'interested';
-    public const STATUS_CONVERTED = 'converted';
-    public const STATUS_LOST = 'lost';
-    public const STATUS_UNRESPONSIVE = 'unresponsive';
+    public const STATUS_OPEN = 'open';
+    public const STATUS_IN_PROCESS = 'in_process';
+    public const STATUS_WAITING = 'waiting';
+    public const STATUS_FINANCE = 'finance';
+    public const STATUS_DONE = 'done';
+    public const STATUS_CANCELLED = 'cancelled';
     protected $fillable = [
         'name', 'email', 'phone', 'source', 'type', 'status', 'priority',
-        'assigned_agent_id', 'created_by_id', 'description', 'preferences',
+        'assigned_agent_id', 'created_by_id', 'customer_id', 'interested_car_id', 'description', 'preferences',
         'budget_min', 'budget_max', 'preferred_contact_method', 'marketing_consent',
         'first_contact_at', 'last_activity_at', 'estimated_value', 'lead_score'
     ];
@@ -50,6 +49,11 @@ class Lead extends Model
         return $this->belongsTo(User::class, 'created_by_id');
     }
 
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'customer_id');
+    }
+
     public function activities(): HasMany
     {
         return $this->hasMany(LeadActivity::class)->orderBy('created_at', 'desc');
@@ -63,6 +67,11 @@ class Lead extends Model
     public function needsAnalysis(): HasOne
     {
         return $this->hasOne(NeedsAnalysis::class);
+    }
+
+    public function interestedCar(): BelongsTo
+    {
+        return $this->belongsTo(Car::class, 'interested_car_id');
     }
 
     // Status Management Methods
@@ -270,13 +279,25 @@ class Lead extends Model
     public static function getAllStatuses(): array
     {
         return [
-            self::STATUS_NEW,
-            self::STATUS_CONTACTED,
-            self::STATUS_QUALIFIED,
-            self::STATUS_INTERESTED,
-            self::STATUS_CONVERTED,
-            self::STATUS_LOST,
-            self::STATUS_UNRESPONSIVE,
+            self::STATUS_OPEN,
+            self::STATUS_IN_PROCESS,
+            self::STATUS_WAITING,
+            self::STATUS_FINANCE,
+            self::STATUS_DONE,
+            self::STATUS_CANCELLED,
         ];
+    }
+
+    public function getStatusLabel(): string
+    {
+        return match($this->status) {
+            self::STATUS_OPEN => 'Öppen',
+            self::STATUS_IN_PROCESS => 'Pågår',
+            self::STATUS_WAITING => 'Väntar',
+            self::STATUS_FINANCE => 'Finansiering',
+            self::STATUS_DONE => 'Klar',
+            self::STATUS_CANCELLED => 'Avbruten',
+            default => ucfirst($this->status),
+        };
     }
 }

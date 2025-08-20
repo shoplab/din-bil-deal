@@ -1,0 +1,491 @@
+CREATE TABLE IF NOT EXISTS "migrations"(
+  "id" integer primary key autoincrement not null,
+  "migration" varchar not null,
+  "batch" integer not null
+);
+CREATE TABLE IF NOT EXISTS "password_reset_tokens"(
+  "email" varchar not null,
+  "token" varchar not null,
+  "created_at" datetime,
+  primary key("email")
+);
+CREATE TABLE IF NOT EXISTS "sessions"(
+  "id" varchar not null,
+  "user_id" integer,
+  "ip_address" varchar,
+  "user_agent" text,
+  "payload" text not null,
+  "last_activity" integer not null,
+  primary key("id")
+);
+CREATE INDEX "sessions_user_id_index" on "sessions"("user_id");
+CREATE INDEX "sessions_last_activity_index" on "sessions"("last_activity");
+CREATE TABLE IF NOT EXISTS "cache"(
+  "key" varchar not null,
+  "value" text not null,
+  "expiration" integer not null,
+  primary key("key")
+);
+CREATE TABLE IF NOT EXISTS "cache_locks"(
+  "key" varchar not null,
+  "owner" varchar not null,
+  "expiration" integer not null,
+  primary key("key")
+);
+CREATE TABLE IF NOT EXISTS "jobs"(
+  "id" integer primary key autoincrement not null,
+  "queue" varchar not null,
+  "payload" text not null,
+  "attempts" integer not null,
+  "reserved_at" integer,
+  "available_at" integer not null,
+  "created_at" integer not null
+);
+CREATE INDEX "jobs_queue_index" on "jobs"("queue");
+CREATE TABLE IF NOT EXISTS "job_batches"(
+  "id" varchar not null,
+  "name" varchar not null,
+  "total_jobs" integer not null,
+  "pending_jobs" integer not null,
+  "failed_jobs" integer not null,
+  "failed_job_ids" text not null,
+  "options" text,
+  "cancelled_at" integer,
+  "created_at" integer not null,
+  "finished_at" integer,
+  primary key("id")
+);
+CREATE TABLE IF NOT EXISTS "failed_jobs"(
+  "id" integer primary key autoincrement not null,
+  "uuid" varchar not null,
+  "connection" text not null,
+  "queue" text not null,
+  "payload" text not null,
+  "exception" text not null,
+  "failed_at" datetime not null default CURRENT_TIMESTAMP
+);
+CREATE UNIQUE INDEX "failed_jobs_uuid_unique" on "failed_jobs"("uuid");
+CREATE TABLE IF NOT EXISTS "leads"(
+  "id" integer primary key autoincrement not null,
+  "name" varchar not null,
+  "email" varchar not null,
+  "phone" varchar,
+  "source" varchar check("source" in('needs_analysis', 'car_deal_request', 'sell_car', 'website_contact')) not null,
+  "type" varchar check("type" in('buy_car', 'sell_car', 'needs_analysis')) not null,
+  "status" varchar check("status" in('open', 'in_process', 'waiting', 'finance', 'done', 'cancelled')) not null,
+  "priority" integer not null default '3',
+  "assigned_agent_id" integer,
+  "created_by_id" integer,
+  "description" text,
+  "preferences" text,
+  "budget_min" numeric,
+  "budget_max" numeric,
+  "preferred_contact_method" varchar check("preferred_contact_method" in('email', 'phone', 'both')) not null default 'both',
+  "marketing_consent" tinyint(1) not null default '0',
+  "first_contact_at" datetime,
+  "last_activity_at" datetime,
+  "estimated_value" numeric,
+  "lead_score" integer not null default '0',
+  "created_at" datetime,
+  "updated_at" datetime,
+  foreign key("assigned_agent_id") references "users"("id") on delete set null,
+  foreign key("created_by_id") references "users"("id") on delete set null
+);
+CREATE INDEX "leads_status_assigned_agent_id_index" on "leads"(
+  "status",
+  "assigned_agent_id"
+);
+CREATE INDEX "leads_source_created_at_index" on "leads"(
+  "source",
+  "created_at"
+);
+CREATE INDEX "leads_lead_score_status_index" on "leads"(
+  "lead_score",
+  "status"
+);
+CREATE TABLE IF NOT EXISTS "cars"(
+  "id" integer primary key autoincrement not null,
+  "make" varchar not null,
+  "model" varchar not null,
+  "variant" varchar,
+  "year" integer not null,
+  "registration_number" varchar,
+  "vin" varchar,
+  "price" numeric not null,
+  "original_price" numeric,
+  "market_value" numeric,
+  "price_negotiable" tinyint(1) not null default '1',
+  "mileage" integer,
+  "fuel_type" varchar,
+  "transmission" varchar,
+  "engine_size" integer,
+  "power_hp" integer,
+  "drivetrain" varchar,
+  "color" varchar,
+  "doors" integer,
+  "seats" integer,
+  "condition" varchar check("condition" in('new', 'excellent', 'good', 'fair', 'poor')) not null default 'good',
+  "status" varchar check("status" in('available', 'reserved', 'sold', 'inactive')) not null default 'available',
+  "condition_notes" text,
+  "defects" text,
+  "features" text,
+  "safety_features" text,
+  "comfort_features" text,
+  "technical_features" text,
+  "inspection_date" date,
+  "inspection_passed" tinyint(1),
+  "previous_owners" integer,
+  "accident_history" tinyint(1) not null default '0',
+  "service_history" text,
+  "seller_type" varchar,
+  "seller_name" varchar,
+  "seller_contact" varchar,
+  "seller_notes" text,
+  "created_by_id" integer,
+  "featured" tinyint(1) not null default '0',
+  "view_count" integer not null default '0',
+  "inquiry_count" integer not null default '0',
+  "published_at" datetime,
+  "expires_at" datetime,
+  "external_data" text,
+  "external_data_updated_at" datetime,
+  "slug" varchar,
+  "description" text,
+  "marketing_text" text,
+  "tags" text,
+  "created_at" datetime,
+  "updated_at" datetime,
+  foreign key("created_by_id") references "users"("id") on delete set null
+);
+CREATE INDEX "cars_make_model_year_index" on "cars"("make", "model", "year");
+CREATE INDEX "cars_price_status_index" on "cars"("price", "status");
+CREATE INDEX "cars_fuel_type_transmission_index" on "cars"(
+  "fuel_type",
+  "transmission"
+);
+CREATE INDEX "cars_status_featured_published_at_index" on "cars"(
+  "status",
+  "featured",
+  "published_at"
+);
+CREATE INDEX "cars_mileage_year_index" on "cars"("mileage", "year");
+CREATE INDEX "cars_make_index" on "cars"("make");
+CREATE INDEX "cars_model_index" on "cars"("model");
+CREATE INDEX "cars_variant_index" on "cars"("variant");
+CREATE UNIQUE INDEX "cars_registration_number_unique" on "cars"(
+  "registration_number"
+);
+CREATE UNIQUE INDEX "cars_vin_unique" on "cars"("vin");
+CREATE UNIQUE INDEX "cars_slug_unique" on "cars"("slug");
+CREATE TABLE IF NOT EXISTS "deals"(
+  "id" integer primary key autoincrement not null,
+  "lead_id" integer not null,
+  "car_id" integer,
+  "customer_id" integer,
+  "status" varchar check("status" in('new', 'contacted', 'qualified', 'proposal_sent', 'negotiating', 'agreement_pending', 'financing', 'inspection', 'finalizing', 'completed', 'cancelled', 'lost')) not null default 'new',
+  "stage_order" integer not null default '1',
+  "deal_type" varchar check("deal_type" in('buy_car', 'sell_car', 'trade_in', 'consultation')) not null,
+  "deal_source" varchar,
+  "vehicle_price" numeric,
+  "commission_rate" numeric not null default '0.01',
+  "commission_amount" numeric,
+  "savings_amount" numeric,
+  "financing_amount" numeric,
+  "down_payment" numeric,
+  "financing_partner" varchar,
+  "assigned_agent_id" integer,
+  "manager_id" integer,
+  "priority" integer not null default '3',
+  "probability" numeric not null default '0.5',
+  "first_contact_at" datetime,
+  "proposal_sent_at" datetime,
+  "agreement_signed_at" datetime,
+  "expected_close_date" datetime,
+  "actual_close_date" datetime,
+  "last_activity_at" datetime,
+  "description" text,
+  "customer_requirements" text,
+  "negotiation_notes" text,
+  "internal_notes" text,
+  "deal_terms" text,
+  "documents" text,
+  "contract_url" varchar,
+  "signature_request_id" varchar,
+  "contract_signed_at" datetime,
+  "competitor_offers" text,
+  "market_comparison" numeric,
+  "unique_selling_points" text,
+  "next_follow_up_at" datetime,
+  "next_action" varchar,
+  "communication_preference" varchar check("communication_preference" in('email', 'phone', 'in_person', 'video_call')),
+  "lost_reason" varchar,
+  "lessons_learned" text,
+  "customer_satisfaction_score" integer,
+  "referral_potential" tinyint(1) not null default '0',
+  "insurance_partner" varchar,
+  "insurance_commission" numeric,
+  "insurance_sold" tinyint(1) not null default '0',
+  "created_at" datetime,
+  "updated_at" datetime,
+  foreign key("lead_id") references "leads"("id") on delete cascade,
+  foreign key("car_id") references "cars"("id") on delete set null,
+  foreign key("customer_id") references "users"("id") on delete set null,
+  foreign key("assigned_agent_id") references "users"("id") on delete set null,
+  foreign key("manager_id") references "users"("id") on delete set null
+);
+CREATE INDEX "deals_status_assigned_agent_id_index" on "deals"(
+  "status",
+  "assigned_agent_id"
+);
+CREATE INDEX "deals_deal_type_status_created_at_index" on "deals"(
+  "deal_type",
+  "status",
+  "created_at"
+);
+CREATE INDEX "deals_expected_close_date_probability_index" on "deals"(
+  "expected_close_date",
+  "probability"
+);
+CREATE INDEX "deals_lead_id_status_index" on "deals"("lead_id", "status");
+CREATE INDEX "deals_car_id_status_index" on "deals"("car_id", "status");
+CREATE INDEX "deals_commission_amount_actual_close_date_index" on "deals"(
+  "commission_amount",
+  "actual_close_date"
+);
+CREATE TABLE IF NOT EXISTS "needs_analysis"(
+  "id" integer primary key autoincrement not null,
+  "customer_id" integer,
+  "lead_id" integer,
+  "session_id" varchar,
+  "customer_name" varchar,
+  "customer_email" varchar,
+  "customer_phone" varchar,
+  "budget_min" numeric,
+  "budget_max" numeric,
+  "budget_flexibility" varchar check("budget_flexibility" in('strict', 'flexible', 'very_flexible')),
+  "payment_method" varchar check("payment_method" in('cash', 'financing', 'leasing', 'mixed')),
+  "trade_in_vehicle" tinyint(1) not null default '0',
+  "trade_in_value" numeric,
+  "preferred_makes" text,
+  "preferred_models" text,
+  "vehicle_type" varchar check("vehicle_type" in('sedan', 'suv', 'hatchback', 'wagon', 'coupe', 'convertible', 'pickup', 'van')),
+  "size_preference" varchar check("size_preference" in('small', 'medium', 'large', 'extra_large')),
+  "min_year" integer,
+  "max_mileage" integer,
+  "primary_use" varchar check("primary_use" in('commuting', 'family', 'business', 'leisure', 'mixed')),
+  "annual_mileage" integer,
+  "driving_environment" varchar check("driving_environment" in('city', 'highway', 'mixed', 'rural')),
+  "passengers_needed" integer,
+  "cargo_space_important" tinyint(1) not null default '0',
+  "fuel_preferences" text,
+  "environmental_priority" varchar check("environmental_priority" in('low', 'medium', 'high')),
+  "fuel_economy_important" tinyint(1) not null default '0',
+  "must_have_features" text,
+  "nice_to_have_features" text,
+  "safety_priorities" text,
+  "comfort_priorities" text,
+  "technology_priorities" text,
+  "lifestyle" varchar check("lifestyle" in('urban_professional', 'family_oriented', 'outdoor_enthusiast', 'luxury_seeker', 'practical_driver')),
+  "activities" text,
+  "brand_loyalty" tinyint(1) not null default '0',
+  "preferred_brand" varchar,
+  "purchase_timeline" varchar check("purchase_timeline" in('immediate', 'one_month', 'three_months', 'six_months', 'flexible')),
+  "urgency_level" varchar check("urgency_level" in('low', 'medium', 'high', 'urgent')),
+  "timeline_notes" text,
+  "car_knowledge_level" varchar check("car_knowledge_level" in('beginner', 'intermediate', 'expert')),
+  "first_time_buyer" tinyint(1) not null default '0',
+  "previous_cars_owned" integer,
+  "current_vehicle" varchar,
+  "responses" text,
+  "questions_answered" integer not null default '0',
+  "total_questions" integer not null default '0',
+  "completion_percentage" numeric not null default '0',
+  "compatibility_scores" text,
+  "recommended_cars" text,
+  "profile_completeness" numeric not null default '0',
+  "matching_confidence" integer not null default '0',
+  "needs_summary" text,
+  "priority_factors" text,
+  "constraints" text,
+  "opportunities" text,
+  "status" varchar check("status" in('draft', 'completed', 'reviewed', 'matched', 'contacted')) not null default 'draft',
+  "consent_marketing" tinyint(1) not null default '0',
+  "consent_contact" tinyint(1) not null default '0',
+  "completed_at" datetime,
+  "reviewed_at" datetime,
+  "created_at" datetime,
+  "updated_at" datetime,
+  foreign key("customer_id") references "users"("id") on delete cascade,
+  foreign key("lead_id") references "leads"("id") on delete cascade
+);
+CREATE INDEX "needs_analysis_customer_id_status_index" on "needs_analysis"(
+  "customer_id",
+  "status"
+);
+CREATE INDEX "needs_analysis_completion_percentage_status_index" on "needs_analysis"(
+  "completion_percentage",
+  "status"
+);
+CREATE INDEX "needs_analysis_budget_min_budget_max_index" on "needs_analysis"(
+  "budget_min",
+  "budget_max"
+);
+CREATE INDEX "needs_analysis_purchase_timeline_urgency_level_index" on "needs_analysis"(
+  "purchase_timeline",
+  "urgency_level"
+);
+CREATE INDEX "needs_analysis_session_id_created_at_index" on "needs_analysis"(
+  "session_id",
+  "created_at"
+);
+CREATE TABLE IF NOT EXISTS "car_images"(
+  "id" integer primary key autoincrement not null,
+  "car_id" integer not null,
+  "filename" varchar not null,
+  "path" varchar not null,
+  "url" varchar not null,
+  "thumbnail_path" varchar,
+  "thumbnail_url" varchar,
+  "alt_text" varchar,
+  "title" varchar,
+  "description" text,
+  "type" varchar check("type" in('exterior', 'interior', 'engine', 'dashboard', 'trunk', 'wheels', 'other')) not null default 'exterior',
+  "sort_order" integer not null default '0',
+  "is_primary" tinyint(1) not null default '0',
+  "is_featured" tinyint(1) not null default '0',
+  "is_360" tinyint(1) not null default '0',
+  "mime_type" varchar,
+  "file_size" integer,
+  "width" integer,
+  "height" integer,
+  "color_profile" varchar,
+  "uploaded_by_id" integer,
+  "processing_status" varchar check("processing_status" in('pending', 'processing', 'completed', 'failed')) not null default 'pending',
+  "processing_error" text,
+  "processed_at" datetime,
+  "variants" text,
+  "optimized" tinyint(1) not null default '0',
+  "compression_quality" integer,
+  "view_count" integer not null default '0',
+  "last_viewed_at" datetime,
+  "created_at" datetime,
+  "updated_at" datetime,
+  foreign key("car_id") references "cars"("id") on delete cascade,
+  foreign key("uploaded_by_id") references "users"("id") on delete set null
+);
+CREATE INDEX "car_images_car_id_sort_order_index" on "car_images"(
+  "car_id",
+  "sort_order"
+);
+CREATE INDEX "car_images_car_id_is_primary_index" on "car_images"(
+  "car_id",
+  "is_primary"
+);
+CREATE INDEX "car_images_car_id_type_index" on "car_images"("car_id", "type");
+CREATE INDEX "car_images_processing_status_created_at_index" on "car_images"(
+  "processing_status",
+  "created_at"
+);
+CREATE UNIQUE INDEX "unique_primary_per_car" on "car_images"(
+  "car_id",
+  "is_primary"
+);
+CREATE TABLE IF NOT EXISTS "lead_activities"(
+  "id" integer primary key autoincrement not null,
+  "lead_id" integer not null,
+  "user_id" integer,
+  "deal_id" integer,
+  "activity_type" varchar check("activity_type" in('created', 'status_changed', 'assigned', 'contacted', 'email_sent', 'call_made', 'meeting_scheduled', 'proposal_sent', 'document_signed', 'payment_received', 'note_added', 'follow_up_scheduled', 'lead_qualified', 'deal_created', 'deal_closed')) not null,
+  "activity_title" varchar not null,
+  "description" text,
+  "activity_data" text,
+  "old_value" varchar,
+  "new_value" varchar,
+  "communication_method" varchar check("communication_method" in('email', 'phone', 'sms', 'in_person', 'video_call', 'system')),
+  "communication_content" text,
+  "communication_subject" varchar,
+  "communication_direction" varchar check("communication_direction" in('inbound', 'outbound')),
+  "communication_successful" tinyint(1),
+  "scheduled_at" datetime,
+  "completed_at" datetime,
+  "follow_up_at" datetime,
+  "follow_up_type" varchar,
+  "priority" varchar check("priority" in('low', 'medium', 'high', 'urgent')) not null default 'medium',
+  "status" varchar check("status" in('pending', 'completed', 'cancelled', 'failed')) not null default 'completed',
+  "outcome" text,
+  "external_id" varchar,
+  "external_url" varchar,
+  "metadata" text,
+  "duration_minutes" integer,
+  "cost" numeric,
+  "billable" tinyint(1) not null default '0',
+  "created_at" datetime,
+  "updated_at" datetime,
+  foreign key("lead_id") references "leads"("id") on delete cascade,
+  foreign key("user_id") references "users"("id") on delete set null,
+  foreign key("deal_id") references "deals"("id") on delete set null
+);
+CREATE INDEX "lead_activities_lead_id_created_at_index" on "lead_activities"(
+  "lead_id",
+  "created_at"
+);
+CREATE INDEX "lead_activities_user_id_activity_type_index" on "lead_activities"(
+  "user_id",
+  "activity_type"
+);
+CREATE INDEX "lead_activities_activity_type_created_at_index" on "lead_activities"(
+  "activity_type",
+  "created_at"
+);
+CREATE INDEX "lead_activities_status_scheduled_at_index" on "lead_activities"(
+  "status",
+  "scheduled_at"
+);
+CREATE INDEX "lead_activities_follow_up_at_status_index" on "lead_activities"(
+  "follow_up_at",
+  "status"
+);
+CREATE INDEX "lead_activities_deal_id_activity_type_index" on "lead_activities"(
+  "deal_id",
+  "activity_type"
+);
+CREATE TABLE IF NOT EXISTS "users"(
+  "id" integer primary key autoincrement not null,
+  "name" varchar not null,
+  "email" varchar not null,
+  "email_verified_at" datetime,
+  "password" varchar not null,
+  "remember_token" varchar,
+  "created_at" datetime,
+  "updated_at" datetime,
+  "role" varchar check("role" in('admin', 'manager', 'agent', 'customer')) not null default 'customer',
+  "is_active" tinyint(1) not null default '1',
+  "phone" varchar,
+  "department" varchar,
+  "bio" text,
+  "permissions" text,
+  "hire_date" date,
+  "employee_id" varchar,
+  "manager_id" integer,
+  "leads_assigned" integer not null default '0',
+  "deals_closed" integer not null default '0',
+  "total_commission" numeric not null default '0',
+  "last_login_at" datetime,
+  foreign key("manager_id") references "users"("id") on delete set null
+);
+CREATE UNIQUE INDEX "users_email_unique" on "users"("email");
+CREATE INDEX "users_role_is_active_index" on "users"("role", "is_active");
+CREATE INDEX "users_manager_id_role_index" on "users"("manager_id", "role");
+CREATE INDEX "users_employee_id_index" on "users"("employee_id");
+CREATE UNIQUE INDEX "users_employee_id_unique" on "users"("employee_id");
+
+INSERT INTO migrations VALUES(1,'0001_01_01_000000_create_users_table',1);
+INSERT INTO migrations VALUES(2,'0001_01_01_000001_create_cache_table',1);
+INSERT INTO migrations VALUES(3,'0001_01_01_000002_create_jobs_table',1);
+INSERT INTO migrations VALUES(4,'2025_08_05_215303_create_leads_table',1);
+INSERT INTO migrations VALUES(5,'2025_08_05_215548_create_cars_table',1);
+INSERT INTO migrations VALUES(6,'2025_08_05_215738_create_deals_table',1);
+INSERT INTO migrations VALUES(7,'2025_08_05_215952_create_needs_analysis_table',1);
+INSERT INTO migrations VALUES(8,'2025_08_05_220030_create_car_images_table',1);
+INSERT INTO migrations VALUES(9,'2025_08_05_220048_create_lead_activities_table',1);
+INSERT INTO migrations VALUES(10,'2025_08_05_220110_add_role_to_users_table',1);
