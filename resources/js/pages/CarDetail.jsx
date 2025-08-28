@@ -7,13 +7,13 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
+import {
     ArrowLeft,
-    Phone, 
-    Mail, 
-    MapPin, 
-    Calendar, 
-    Fuel, 
+    Phone,
+    Mail,
+    MapPin,
+    Calendar,
+    Fuel,
     Gauge,
     Cog,
     Shield,
@@ -113,7 +113,7 @@ export default function CarDetail({ car, similarCars = [], seller = null }) {
     return (
         <MarketingLayout>
             <Head title={`${displayCar.make} ${displayCar.model} ${displayCar.year} - Din Bil Deal`} />
-            
+
             <div className="container mx-auto px-4 py-8">
                 {/* Breadcrumb */}
                 <div className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
@@ -151,7 +151,7 @@ export default function CarDetail({ car, similarCars = [], seller = null }) {
                                         {displayCar.variant} • {displayCar.year} • {displayCar.mileage.toLocaleString()} mil
                                     </p>
                                 </div>
-                                
+
                                 <div className="flex gap-2">
                                     <Button variant="outline" size="sm">
                                         <Heart className="h-4 w-4" />
@@ -182,11 +182,11 @@ export default function CarDetail({ car, similarCars = [], seller = null }) {
                                     <Car className="h-24 w-24 text-primary/40" />
                                 </div>
                             </div>
-                            
+
                             {/* Thumbnail navigation */}
                             <div className="grid grid-cols-4 gap-2">
                                 {Array.from({ length: 4 }).map((_, index) => (
-                                    <div 
+                                    <div
                                         key={index}
                                         className={cn(
                                             "aspect-video bg-muted rounded cursor-pointer border-2 overflow-hidden",
@@ -210,7 +210,7 @@ export default function CarDetail({ car, similarCars = [], seller = null }) {
                                 <TabsTrigger value="history">Historik</TabsTrigger>
                                 <TabsTrigger value="financing">Finansiering</TabsTrigger>
                             </TabsList>
-                            
+
                             <TabsContent value="overview" className="mt-6">
                                 <div className="space-y-6">
                                     {/* Description */}
@@ -243,7 +243,7 @@ export default function CarDetail({ car, similarCars = [], seller = null }) {
                                     </Card>
                                 </div>
                             </TabsContent>
-                            
+
                             <TabsContent value="specs" className="mt-6">
                                 <Card>
                                     <CardHeader>
@@ -279,7 +279,7 @@ export default function CarDetail({ car, similarCars = [], seller = null }) {
                                                     </div>
                                                 </div>
                                             </div>
-                                            
+
                                             <div className="space-y-4">
                                                 <h4 className="font-semibold flex items-center">
                                                     <Car className="h-4 w-4 mr-2" />
@@ -312,7 +312,7 @@ export default function CarDetail({ car, similarCars = [], seller = null }) {
                                     </CardContent>
                                 </Card>
                             </TabsContent>
-                            
+
                             <TabsContent value="history" className="mt-6">
                                 <Card>
                                     <CardHeader>
@@ -347,7 +347,7 @@ export default function CarDetail({ car, similarCars = [], seller = null }) {
                                                         </div>
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div className="space-y-3">
                                                     <div className="flex items-center justify-between">
                                                         <span className="text-muted-foreground">Senaste service:</span>
@@ -367,7 +367,7 @@ export default function CarDetail({ car, similarCars = [], seller = null }) {
                                     </CardContent>
                                 </Card>
                             </TabsContent>
-                            
+
                             <TabsContent value="financing" className="mt-6">
                                 <Card>
                                     <CardHeader>
@@ -394,7 +394,7 @@ export default function CarDetail({ car, similarCars = [], seller = null }) {
                                                     </div>
                                                 </div>
                                             </div>
-                                            
+
                                             <div className="grid md:grid-cols-2 gap-4 text-sm">
                                                 <div className="flex justify-between">
                                                     <span className="text-muted-foreground">Löptid:</span>
@@ -405,7 +405,7 @@ export default function CarDetail({ car, similarCars = [], seller = null }) {
                                                     <span>{displayCar.financing.interestRate}%</span>
                                                 </div>
                                             </div>
-                                            
+
                                             <Button className="w-full">
                                                 <Calculator className="mr-2 h-4 w-4" />
                                                 Beräkna ditt lån
@@ -420,7 +420,7 @@ export default function CarDetail({ car, similarCars = [], seller = null }) {
                     {/* Sidebar */}
                     <div className="space-y-6">
                         {/* Price Card */}
-                        <Card className="sticky top-24">
+                        <Card className="top-24">
                             <CardContent className="p-6">
                                 <div className="text-center mb-6">
                                     <div className="text-3xl font-bold mb-2">
@@ -445,29 +445,29 @@ export default function CarDetail({ car, similarCars = [], seller = null }) {
                                         <Mail className="mr-2 h-4 w-4" />
                                         Skicka meddelande
                                     </Button>
-                                    
+
                                     {/* Booking Buttons */}
                                     <div className="space-y-2">
-                                        <Button 
-                                            variant="outline" 
+                                        <Button
+                                            variant="outline"
                                             className="w-full"
                                             onClick={() => router.visit(`/customer/appointments/create/${displayCar.id}`)}
                                         >
                                             <Calendar className="mr-2 h-4 w-4" />
                                             Boka provkörning
                                         </Button>
-                                        
+
                                         <div className="grid grid-cols-2 gap-2">
-                                            <Button 
-                                                variant="ghost" 
+                                            <Button
+                                                variant="ghost"
                                                 size="sm"
                                                 className="text-xs"
                                                 onClick={() => router.visit(`/customer/appointments/create/${displayCar.id}?type=viewing`)}
                                             >
                                                 Boka visning
                                             </Button>
-                                            <Button 
-                                                variant="ghost" 
+                                            <Button
+                                                variant="ghost"
                                                 size="sm"
                                                 className="text-xs"
                                                 onClick={() => router.visit(`/customer/appointments/create/${displayCar.id}?type=consultation`)}
@@ -525,11 +525,11 @@ export default function CarDetail({ car, similarCars = [], seller = null }) {
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <div className="text-sm text-muted-foreground mb-4">
                                     {sampleSeller.dealership}
                                 </div>
-                                
+
                                 <div className="space-y-2">
                                     <Button variant="outline" size="sm" className="w-full justify-start">
                                         <Phone className="mr-2 h-4 w-4" />

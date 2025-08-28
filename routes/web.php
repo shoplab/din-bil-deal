@@ -40,7 +40,7 @@ Route::get('/', function () {
         'cars' => [],
         'featuredCars' => $featuredCars,
     ]);
-});
+})->name('home');
 
 
 // Marketing pages

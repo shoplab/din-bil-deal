@@ -2,12 +2,12 @@ import { useState } from 'react';
 import { Link, usePage } from '@inertiajs/react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { 
-    Menu, 
-    X, 
-    Car, 
-    Phone, 
-    Mail, 
+import {
+    Menu,
+    X,
+    Car,
+    Phone,
+    Mail,
     MapPin,
     Facebook,
     Instagram,
@@ -67,7 +67,7 @@ export default function MarketingLayout({ children }) {
                     {/* Desktop CTA */}
                     <div className="ml-auto hidden md:flex items-center space-x-4">
                         <Button variant="ghost" asChild>
-                            <Link href="/login">Logga in</Link>
+                            <Link href="/customer/login">Logga in</Link>
                         </Button>
                         <Button asChild>
                             <Link href="/register">Skapa konto</Link>
@@ -141,8 +141,8 @@ export default function MarketingLayout({ children }) {
                                 <span className="text-lg font-bold">Din Bil Deal</span>
                             </Link>
                             <p className="text-sm text-muted-foreground mb-4">
-                                Din pålitliga partner för bilköp och bilförsäljning i Sverige. 
-                                Vi hjälper dig hitta den perfekta bilen eller sälja din nuvarande bil 
+                                Din pålitliga partner för bilköp och bilförsäljning i Sverige.
+                                Vi hjälper dig hitta den perfekta bilen eller sälja din nuvarande bil
                                 till bästa pris.
                             </p>
                             <div className="flex space-x-4">
@@ -242,20 +242,20 @@ export default function MarketingLayout({ children }) {
                                 © 2024 Din Bil Deal. Alla rättigheter förbehållna.
                             </p>
                             <div className="flex space-x-6 mt-4 md:mt-0">
-                                <Link 
-                                    href="/privacy" 
+                                <Link
+                                    href="/privacy"
                                     className="text-sm text-muted-foreground hover:text-primary"
                                 >
                                     Integritetspolicy
                                 </Link>
-                                <Link 
-                                    href="/terms" 
+                                <Link
+                                    href="/terms"
                                     className="text-sm text-muted-foreground hover:text-primary"
                                 >
                                     Villkor
                                 </Link>
-                                <Link 
-                                    href="/cookies" 
+                                <Link
+                                    href="/cookies"
                                     className="text-sm text-muted-foreground hover:text-primary"
                                 >
                                     Cookies
