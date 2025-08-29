@@ -36,7 +36,7 @@ Route::get('/', function () {
             ];
         });
 
-    return Inertia::render('MarketingHome', [
+    return Inertia::render('pages/MarketingHome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'cars' => [],
@@ -232,7 +232,7 @@ Route::get('/cars/{id}', function ($id) {
 
 // Marketing pages
 Route::get('/sell', function () {
-    return Inertia::render('SellYourCar');
+    return Inertia::render('pages/SellYourCar');
 })->name('sell');
 
 Route::post('/sell/submit', function () {
@@ -241,7 +241,7 @@ Route::post('/sell/submit', function () {
 })->name('sell.submit');
 
 Route::get('/financing', function () {
-    return Inertia::render('Financing');
+    return Inertia::render('pages/Financing');
 })->name('financing');
 
 Route::post('/financing/apply', function () {
@@ -250,11 +250,11 @@ Route::post('/financing/apply', function () {
 })->name('financing.apply');
 
 Route::get('/about', function () {
-    return Inertia::render('AboutUs');
+    return Inertia::render('pages/AboutUs');
 })->name('about');
 
 Route::get('/valuation', function () {
-    return Inertia::render('Valuation');
+    return Inertia::render('pages/Valuation');
 })->name('valuation');
 
 Route::post('/valuation/submit', function () {
@@ -263,7 +263,7 @@ Route::post('/valuation/submit', function () {
 })->name('valuation.submit');
 
 Route::get('/inspection', function () {
-    return Inertia::render('Inspection');
+    return Inertia::render('pages/Inspection');
 })->name('inspection');
 
 Route::post('/inspection/book', function () {
@@ -272,7 +272,7 @@ Route::post('/inspection/book', function () {
 })->name('inspection.book');
 
 Route::get('/needs-analysis', function () {
-    return Inertia::render('NeedsAnalysis');
+    return Inertia::render('pages/NeedsAnalysis');
 })->name('needs-analysis');
 
 Route::post('/needs-analysis/submit', function () {
@@ -281,7 +281,7 @@ Route::post('/needs-analysis/submit', function () {
 })->name('needs-analysis.submit');
 
 Route::get('/car-deal', function () {
-    return Inertia::render('CarDealRegistration');
+    return Inertia::render('pages/CarDealRegistration');
 })->name('car-deal');
 
 Route::post('/car-deal/register', function () {
@@ -290,7 +290,7 @@ Route::post('/car-deal/register', function () {
 })->name('car-deal.register');
 
 Route::get('/contact', function () {
-    return Inertia::render('Contact');
+    return Inertia::render('pages/Contact');
 });
 
 Route::post('/contact', function () {
@@ -325,7 +325,7 @@ Route::get('/dashboard', function () {
     }
     
     // For other roles, show basic dashboard
-    return Inertia::render('Dashboard');
+    return Inertia::render('pages/Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
