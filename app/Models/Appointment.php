@@ -158,7 +158,7 @@ class Appointment extends Model
         return true;
     }
 
-    public function complete(string $notes = null): bool
+    public function complete(?string $notes = null): bool
     {
         if (!in_array($this->status, [self::STATUS_CONFIRMED, self::STATUS_REQUESTED])) {
             return false;
