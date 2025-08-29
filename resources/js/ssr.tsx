@@ -12,8 +12,10 @@ createServer((page) =>
         render: ReactDOMServer.renderToString,
         title: (title) => title ? `${title} - ${appName}` : appName,
         resolve: (name) => {
-            // Handle both 'pages/ComponentName' and 'ComponentName' formats
-            const path = name.startsWith('pages/') ? `./${name}` : `./pages/${name}`;
+            // Handle case where Laravel might prepend 'Pages/' (uppercase)
+            // Convert to lowercase 'pages/' to match actual directory structure
+            const normalizedName = name.replace(/^Pages\//i, '');
+            const path = `./pages/${normalizedName}`;
             return resolvePageComponent(path, import.meta.glob('./pages/**/*.{jsx,tsx}'));
         },
         setup: ({ App, props }) => {
