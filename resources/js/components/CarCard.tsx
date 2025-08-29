@@ -25,7 +25,7 @@ interface Car {
     featured: boolean;
     rating: number;
     description: string;
-    images?: any[];
+    images?: string[];
 }
 
 interface CarCardProps {

@@ -287,6 +287,28 @@ Route::middleware(['auth', App\Http\Middleware\AdminMiddleware::class])->prefix(
         Route::get('/leads', [App\Http\Controllers\Admin\AnalyticsController::class, 'leads'])->name('leads');
         Route::get('/inventory', [App\Http\Controllers\Admin\AnalyticsController::class, 'inventory'])->name('inventory');
     });
+
+    // Users Management
+    Route::resource('users', App\Http\Controllers\Admin\UserController::class);
+    Route::post('users/{user}/reset-password', [App\Http\Controllers\Admin\UserController::class, 'resetPassword'])->name('users.reset-password');
+    Route::patch('users/{user}/toggle-verification', [App\Http\Controllers\Admin\UserController::class, 'toggleVerification'])->name('users.toggle-verification');
+    
+    // Appointments Management
+    Route::resource('appointments', App\Http\Controllers\Admin\AppointmentController::class);
+    Route::patch('appointments/{appointment}/confirm', [App\Http\Controllers\Admin\AppointmentController::class, 'confirm'])->name('appointments.confirm');
+    Route::patch('appointments/{appointment}/complete', [App\Http\Controllers\Admin\AppointmentController::class, 'complete'])->name('appointments.complete');
+    Route::patch('appointments/{appointment}/cancel', [App\Http\Controllers\Admin\AppointmentController::class, 'cancel'])->name('appointments.cancel');
+    Route::patch('appointments/{appointment}/mark-no-show', [App\Http\Controllers\Admin\AppointmentController::class, 'markNoShow'])->name('appointments.mark-no-show');
+    Route::patch('appointments/{appointment}/reschedule', [App\Http\Controllers\Admin\AppointmentController::class, 'reschedule'])->name('appointments.reschedule');
+    
+    // Conversations Management
+    Route::resource('conversations', App\Http\Controllers\Admin\ConversationController::class);
+    Route::post('conversations/{conversation}/reply', [App\Http\Controllers\Admin\ConversationController::class, 'reply'])->name('conversations.reply');
+    Route::patch('conversations/{conversation}/status', [App\Http\Controllers\Admin\ConversationController::class, 'updateStatus'])->name('conversations.update-status');
+    Route::patch('conversations/{conversation}/priority', [App\Http\Controllers\Admin\ConversationController::class, 'updatePriority'])->name('conversations.update-priority');
+    Route::patch('conversations/{conversation}/assign', [App\Http\Controllers\Admin\ConversationController::class, 'assign'])->name('conversations.assign');
+    Route::patch('conversations/{conversation}/close', [App\Http\Controllers\Admin\ConversationController::class, 'close'])->name('conversations.close');
+    Route::patch('conversations/{conversation}/reopen', [App\Http\Controllers\Admin\ConversationController::class, 'reopen'])->name('conversations.reopen');
 });
 
 // Customer Authentication Routes
