@@ -1,0 +1,7 @@
+{
+  "scripts": {
+    "build": "vite build",
+    "build:ssr": "vite build && vite build --ssr",
+    "postinstall": "npm run build"
+  }
+}

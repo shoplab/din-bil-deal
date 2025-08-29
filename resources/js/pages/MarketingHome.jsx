@@ -232,6 +232,123 @@ export default function MarketingHome({ cars = [], featuredCars = [] }) {
                 </div>
             </section>
 
+            {/* Needs Analysis CTA Section */}
+            <section className="py-20">
+                <div className="container mx-auto px-4">
+                    <div className="max-w-4xl mx-auto bg-gradient-to-r from-primary/10 to-primary/5 rounded-2xl p-12">
+                        <div className="grid lg:grid-cols-2 gap-8 items-center">
+                            <div>
+                                <h2 className="text-3xl font-bold mb-4">
+                                    Osäker på vilken bil som passar dig?
+                                </h2>
+                                <p className="text-lg text-muted-foreground mb-6">
+                                    Vår behovsanalys hjälper dig hitta den perfekta bilen baserat på dina 
+                                    behov, budget och livsstil. Svara på några enkla frågor och få 
+                                    personliga rekommendationer.
+                                </p>
+                                <Button size="lg" asChild>
+                                    <Link href="/needs-analysis">
+                                        Starta behovsanalys
+                                        <ArrowRight className="ml-2 h-5 w-5" />
+                                    </Link>
+                                </Button>
+                            </div>
+                            <div className="space-y-4">
+                                <div className="flex items-center gap-3">
+                                    <CheckCircle className="h-6 w-6 text-primary flex-shrink-0" />
+                                    <span>Personliga rekommendationer</span>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <CheckCircle className="h-6 w-6 text-primary flex-shrink-0" />
+                                    <span>Baserat på din budget och behov</span>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <CheckCircle className="h-6 w-6 text-primary flex-shrink-0" />
+                                    <span>Tar endast 5 minuter</span>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <CheckCircle className="h-6 w-6 text-primary flex-shrink-0" />
+                                    <span>Helt kostnadsfritt</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Car Deal Registration CTA Section */}
+            <section className="py-20 bg-muted/30">
+                <div className="container mx-auto px-4">
+                    <div className="text-center mb-12">
+                        <h2 className="text-3xl lg:text-4xl font-bold mb-4">
+                            Hittat en bil du vill köpa?
+                        </h2>
+                        <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+                            Låt oss hjälpa dig med hela köpprocessen. Vi förhandlar pris, kontrollerar 
+                            bilens skick och säkerställer en trygg affär.
+                        </p>
+                    </div>
+                    
+                    <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                        <Card className="text-center">
+                            <CardHeader>
+                                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                                    <Car className="h-6 w-6 text-primary" />
+                                </div>
+                                <CardTitle>Registrera bilaffär</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <p className="text-muted-foreground mb-4">
+                                    Ange bilens registreringsnummer så tar vi hand om resten
+                                </p>
+                                <Button variant="outline" size="sm" asChild>
+                                    <Link href="/car-deal">Registrera bil</Link>
+                                </Button>
+                            </CardContent>
+                        </Card>
+                        
+                        <Card className="text-center">
+                            <CardHeader>
+                                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                                    <Shield className="h-6 w-6 text-primary" />
+                                </div>
+                                <CardTitle>Vi förhandlar</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <p className="text-muted-foreground mb-4">
+                                    Våra experter förhandlar för att få bästa möjliga pris
+                                </p>
+                                <p className="text-sm font-semibold text-primary">Spara upp till 20%</p>
+                            </CardContent>
+                        </Card>
+                        
+                        <Card className="text-center">
+                            <CardHeader>
+                                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                                    <CheckCircle className="h-6 w-6 text-primary" />
+                                </div>
+                                <CardTitle>Trygg affär</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <p className="text-muted-foreground mb-4">
+                                    Vi säkerställer att allt går rätt till med endast 1% provision
+                                </p>
+                                <p className="text-sm font-semibold text-primary">Betala när affären är klar</p>
+                            </CardContent>
+                        </Card>
+                    </div>
+                    
+                    <div className="text-center mt-8">
+                        <Button size="lg" asChild>
+                            <Link href="/car-deal">
+                                Registrera din bilaffär
+                                <ArrowRight className="ml-2 h-5 w-5" />
+                            </Link>
+                        </Button>
+                    </div>
+                </div>
+            </section>
+
             {/* CTA Section */}
             <section className="py-20 bg-primary text-primary-foreground">
                 <div className="container mx-auto px-4 text-center">

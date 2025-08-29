@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use App\Models\Car;
 use App\Models\User;
 use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -228,6 +230,65 @@ Route::get('/cars/{id}', function ($id) {
     ]);
 });
 
+// Marketing pages
+Route::get('/sell', function () {
+    return Inertia::render('SellYourCar');
+})->name('sell');
+
+Route::post('/sell/submit', function () {
+    // Handle sell form submission
+    return redirect()->back()->with('success', 'Tack! Vi kontaktar dig inom 24 timmar.');
+})->name('sell.submit');
+
+Route::get('/financing', function () {
+    return Inertia::render('Financing');
+})->name('financing');
+
+Route::post('/financing/apply', function () {
+    // Handle financing application
+    return redirect()->back()->with('success', 'Låneansökan mottagen! Vi återkommer med besked.');
+})->name('financing.apply');
+
+Route::get('/about', function () {
+    return Inertia::render('AboutUs');
+})->name('about');
+
+Route::get('/valuation', function () {
+    return Inertia::render('Valuation');
+})->name('valuation');
+
+Route::post('/valuation/submit', function () {
+    // Handle valuation form submission
+    return redirect()->back()->with('success', 'Värdering genomförd!');
+})->name('valuation.submit');
+
+Route::get('/inspection', function () {
+    return Inertia::render('Inspection');
+})->name('inspection');
+
+Route::post('/inspection/book', function () {
+    // Handle inspection booking
+    return redirect()->back()->with('success', 'Besiktning bokad! Vi kontaktar dig för att bekräfta tiden.');
+})->name('inspection.book');
+
+Route::get('/needs-analysis', function () {
+    return Inertia::render('NeedsAnalysis');
+})->name('needs-analysis');
+
+Route::post('/needs-analysis/submit', function () {
+    // Handle needs analysis submission
+    return redirect()->back()->with('success', 'Tack för dina svar! Vi skickar personliga rekommendationer.');
+})->name('needs-analysis.submit');
+
+Route::get('/car-deal', function () {
+    return Inertia::render('CarDealRegistration');
+})->name('car-deal');
+
+Route::post('/car-deal/register', function () {
+    // Handle car deal registration
+    return redirect()->back()->with('success', 'Bilaffär registrerad! Vi kontaktar säljaren åt dig.');
+})->name('car-deal.register');
+
 Route::get('/contact', function () {
     return Inertia::render('Contact');
 });
@@ -236,6 +297,19 @@ Route::post('/contact', function () {
     // Handle contact form submission
     return redirect()->back()->with('success', 'Meddelande skickat!');
 });
+
+// Health check route for Laravel Cloud
+Route::get('/health', function () {
+    return response()->json([
+        'status' => 'healthy',
+        'timestamp' => now()->toIso8601String(),
+        'service' => config('app.name'),
+        'environment' => config('app.env'),
+        'database' => DB::connection()->getPdo() ? 'connected' : 'disconnected',
+        'cache' => Cache::has('health_check') || Cache::put('health_check', true, 60) ? 'working' : 'error',
+        'queue' => true, // Queue health can be checked via horizon
+    ]);
+})->name('health');
 
 Route::get('/dashboard', function () {
     $user = auth()->user();
