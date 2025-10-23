@@ -4,15 +4,25 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
 import CarCard from '@/components/CarCard';
-import { 
-    Search, 
-    Car, 
-    Shield, 
-    Award, 
-    Users, 
+import {
+    Search,
+    Car,
+    Shield,
+    Award,
+    Users,
     ArrowRight,
-    CheckCircle
+    CheckCircle,
+    TrendingUp,
+    ThumbsUp,
+    Clock,
+    DollarSign,
+    Star,
+    PlayCircle,
+    BarChart3,
+    FileText,
+    Sparkles
 } from 'lucide-react';
 
 export default function MarketingHome({ cars = [], featuredCars = [] }) {
@@ -21,28 +31,46 @@ export default function MarketingHome({ cars = [], featuredCars = [] }) {
             <Head title="Hem - Din Bil Deal" />
             
             {/* Hero Section */}
-            <section className="relative bg-gradient-to-r from-primary/10 via-primary/5 to-background py-20 lg:py-32">
+            <section className="relative bg-gradient-to-br from-primary/10 via-primary/5 to-background py-16 lg:py-28">
                 <div className="container mx-auto px-4">
                     <div className="grid lg:grid-cols-2 gap-12 items-center">
                         <div>
+                            <Badge className="mb-4 bg-primary/10 text-primary hover:bg-primary/20">
+                                <Sparkles className="h-3 w-3 mr-1" />
+                                Sveriges största bilmarknadsplats
+                            </Badge>
                             <h1 className="text-4xl lg:text-6xl font-bold tracking-tight text-foreground mb-6">
-                                Hitta din
-                                <span className="text-primary block">
-                                    drömbil idag
+                                Köp eller sälj din bil
+                                <span className="text-primary block mt-2">
+                                    utan krångel
                                 </span>
                             </h1>
-                            <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
-                                Sveriges mest pålitliga plattform för bilköp och bilförsäljning. 
-                                Över 10,000 verifierade bilar från seriösa säljare.
+                            <p className="text-xl text-muted-foreground mb-6 leading-relaxed">
+                                Låt hundratals bilhandlare konkurrera om ditt köp eller försäljning.
+                                Få bästa pris utan förhandling.
                             </p>
+                            <div className="flex items-center gap-6 mb-8">
+                                <div className="flex items-center gap-2">
+                                    <CheckCircle className="h-5 w-5 text-primary" />
+                                    <span className="text-sm font-medium">Inga avgifter</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <CheckCircle className="h-5 w-5 text-primary" />
+                                    <span className="text-sm font-medium">Snabbt & enkelt</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <CheckCircle className="h-5 w-5 text-primary" />
+                                    <span className="text-sm font-medium">Trygg affär</span>
+                                </div>
+                            </div>
                             <div className="flex flex-col sm:flex-row gap-4">
-                                <Button size="lg" asChild>
+                                <Button size="lg" asChild className="text-base">
                                     <Link href="/cars">
-                                        Bläddra bland bilar
+                                        Hitta din nästa bil
                                         <ArrowRight className="ml-2 h-5 w-5" />
                                     </Link>
                                 </Button>
-                                <Button size="lg" variant="outline" asChild>
+                                <Button size="lg" variant="outline" asChild className="text-base">
                                     <Link href="/sell">Sälj din bil</Link>
                                 </Button>
                             </div>
@@ -112,6 +140,112 @@ export default function MarketingHome({ cars = [], featuredCars = [] }) {
                                 </CardContent>
                             </Card>
                         </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Statistics Section */}
+            <section className="py-12 border-b bg-muted/20">
+                <div className="container mx-auto px-4">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                        <div className="text-center">
+                            <div className="text-3xl lg:text-4xl font-bold text-primary mb-2">
+                                50,000+
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                                Nöjda kunder
+                            </div>
+                        </div>
+                        <div className="text-center">
+                            <div className="text-3xl lg:text-4xl font-bold text-primary mb-2">
+                                10,000+
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                                Bilar sålda
+                            </div>
+                        </div>
+                        <div className="text-center">
+                            <div className="text-3xl lg:text-4xl font-bold text-primary mb-2">
+                                500+
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                                Bilhandlare
+                            </div>
+                        </div>
+                        <div className="text-center">
+                            <div className="text-3xl lg:text-4xl font-bold text-primary mb-2">
+                                4.8/5
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                                Kundbetyg
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* How It Works Section */}
+            <section className="py-20 bg-background">
+                <div className="container mx-auto px-4">
+                    <div className="text-center mb-16">
+                        <h2 className="text-3xl lg:text-5xl font-bold mb-4">
+                            Så fungerar det
+                        </h2>
+                        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                            Enkel process från start till mål – vi gör bilköp och försäljning transparent
+                        </p>
+                    </div>
+
+                    <div className="grid md:grid-cols-3 gap-12 max-w-6xl mx-auto">
+                        <div className="relative">
+                            <div className="flex flex-col items-center text-center">
+                                <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center mb-6">
+                                    <span className="text-3xl font-bold text-primary-foreground">1</span>
+                                </div>
+                                <h3 className="text-2xl font-bold mb-4">Välj din bil</h3>
+                                <p className="text-muted-foreground leading-relaxed">
+                                    Bläddra bland tusentals verifierade bilar eller sök efter din drömbil.
+                                    Filtrera efter märke, pris, bränsle och mer.
+                                </p>
+                            </div>
+                            {/* Connector line for desktop */}
+                            <div className="hidden md:block absolute top-10 left-[60%] w-[80%] h-0.5 bg-primary/20" />
+                        </div>
+
+                        <div className="relative">
+                            <div className="flex flex-col items-center text-center">
+                                <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center mb-6">
+                                    <span className="text-3xl font-bold text-primary-foreground">2</span>
+                                </div>
+                                <h3 className="text-2xl font-bold mb-4">Få erbjudanden</h3>
+                                <p className="text-muted-foreground leading-relaxed">
+                                    Hundratals bilhandlare konkurrerar om din affär.
+                                    Jämför priser och välj det bästa erbjudandet.
+                                </p>
+                            </div>
+                            {/* Connector line for desktop */}
+                            <div className="hidden md:block absolute top-10 left-[60%] w-[80%] h-0.5 bg-primary/20" />
+                        </div>
+
+                        <div className="flex flex-col items-center text-center">
+                            <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center mb-6">
+                                <span className="text-3xl font-bold text-primary-foreground">3</span>
+                            </div>
+                            <h3 className="text-2xl font-bold mb-4">Avsluta affären</h3>
+                            <p className="text-muted-foreground leading-relaxed">
+                                Vi hjälper dig genom hela processen – från provkörning
+                                till leverans. Trygg och säker affär garanterad.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="text-center mt-12">
+                        <Button size="lg" variant="outline" asChild>
+                            <Link href="/about">
+                                Läs mer om hur det fungerar
+                                <ArrowRight className="ml-2 h-5 w-5" />
+                            </Link>
+                        </Button>
                     </div>
                 </div>
             </section>
@@ -232,8 +366,225 @@ export default function MarketingHome({ cars = [], featuredCars = [] }) {
                 </div>
             </section>
 
+            {/* Car Reviews Section */}
+            <section className="py-20 bg-muted/30">
+                <div className="container mx-auto px-4">
+                    <div className="flex justify-between items-center mb-12">
+                        <div>
+                            <h2 className="text-3xl lg:text-4xl font-bold mb-4">
+                                Senaste bilrecensionerna
+                            </h2>
+                            <p className="text-xl text-muted-foreground">
+                                Expertrecensioner och djupgående tester av nya bilar
+                            </p>
+                        </div>
+                        <Button variant="outline" asChild>
+                            <Link href="/cars">
+                                Alla recensioner
+                                <ArrowRight className="ml-2 h-4 w-4" />
+                            </Link>
+                        </Button>
+                    </div>
+
+                    <div className="grid md:grid-cols-3 gap-8">
+                        {/* Review Card 1 */}
+                        <Card className="overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow">
+                            <div className="aspect-video bg-gradient-to-br from-blue-100 to-blue-50 relative">
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                    <PlayCircle className="h-16 w-16 text-primary/60 group-hover:text-primary transition-colors" />
+                                </div>
+                                <Badge className="absolute top-3 right-3 bg-primary">
+                                    <Star className="h-3 w-3 mr-1 fill-current" />
+                                    4.8
+                                </Badge>
+                            </div>
+                            <CardHeader>
+                                <CardTitle className="text-xl">Volvo XC90 2024</CardTitle>
+                                <CardDescription className="flex items-center gap-2">
+                                    <Clock className="h-4 w-4" />
+                                    15 min läsning
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <p className="text-sm text-muted-foreground mb-4">
+                                    En omfattande genomgång av Volvos största SUV. Vi testar prestanda,
+                                    komfort och den senaste tekniken.
+                                </p>
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <BarChart3 className="h-4 w-4 text-primary" />
+                                        <span className="text-sm font-medium">Jämför med andra</span>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        {/* Review Card 2 */}
+                        <Card className="overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow">
+                            <div className="aspect-video bg-gradient-to-br from-green-100 to-green-50 relative">
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                    <PlayCircle className="h-16 w-16 text-primary/60 group-hover:text-primary transition-colors" />
+                                </div>
+                                <Badge className="absolute top-3 right-3 bg-primary">
+                                    <Star className="h-3 w-3 mr-1 fill-current" />
+                                    4.9
+                                </Badge>
+                            </div>
+                            <CardHeader>
+                                <CardTitle className="text-xl">Tesla Model Y 2024</CardTitle>
+                                <CardDescription className="flex items-center gap-2">
+                                    <Clock className="h-4 w-4" />
+                                    12 min läsning
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <p className="text-sm text-muted-foreground mb-4">
+                                    Vår expertrecension av Sveriges mest sålda elbil. Räckvidd,
+                                    prestanda och praktiska egenskaper i fokus.
+                                </p>
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <BarChart3 className="h-4 w-4 text-primary" />
+                                        <span className="text-sm font-medium">Jämför med andra</span>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        {/* Review Card 3 */}
+                        <Card className="overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow">
+                            <div className="aspect-video bg-gradient-to-br from-purple-100 to-purple-50 relative">
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                    <PlayCircle className="h-16 w-16 text-primary/60 group-hover:text-primary transition-colors" />
+                                </div>
+                                <Badge className="absolute top-3 right-3 bg-primary">
+                                    <Star className="h-3 w-3 mr-1 fill-current" />
+                                    4.7
+                                </Badge>
+                            </div>
+                            <CardHeader>
+                                <CardTitle className="text-xl">BMW iX 2024</CardTitle>
+                                <CardDescription className="flex items-center gap-2">
+                                    <Clock className="h-4 w-4" />
+                                    18 min läsning
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <p className="text-sm text-muted-foreground mb-4">
+                                    BMWs flaggskepp bland elbilar testas. Lyx, teknik och körupplevelse
+                                    under luppen.
+                                </p>
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <BarChart3 className="h-4 w-4 text-primary" />
+                                        <span className="text-sm font-medium">Jämför med andra</span>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
+                </div>
+            </section>
+
+            {/* Popular Comparisons Section */}
+            <section className="py-20 bg-background">
+                <div className="container mx-auto px-4">
+                    <div className="text-center mb-12">
+                        <h2 className="text-3xl lg:text-4xl font-bold mb-4">
+                            Populära jämförelser
+                        </h2>
+                        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                            Se hur olika bilar står sig mot varandra
+                        </p>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                        <Card className="cursor-pointer hover:shadow-md transition-shadow">
+                            <CardContent className="pt-6">
+                                <div className="flex items-center justify-between mb-4">
+                                    <div className="text-center flex-1">
+                                        <div className="font-bold text-lg mb-1">Volvo XC90</div>
+                                        <div className="text-sm text-muted-foreground">från 849,000 kr</div>
+                                    </div>
+                                    <div className="px-4">
+                                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                                            <span className="text-primary font-bold">VS</span>
+                                        </div>
+                                    </div>
+                                    <div className="text-center flex-1">
+                                        <div className="font-bold text-lg mb-1">BMW X5</div>
+                                        <div className="text-sm text-muted-foreground">från 899,000 kr</div>
+                                    </div>
+                                </div>
+                                <Button variant="outline" className="w-full" size="sm">
+                                    <BarChart3 className="h-4 w-4 mr-2" />
+                                    Jämför nu
+                                </Button>
+                            </CardContent>
+                        </Card>
+
+                        <Card className="cursor-pointer hover:shadow-md transition-shadow">
+                            <CardContent className="pt-6">
+                                <div className="flex items-center justify-between mb-4">
+                                    <div className="text-center flex-1">
+                                        <div className="font-bold text-lg mb-1">Tesla Model 3</div>
+                                        <div className="text-sm text-muted-foreground">från 549,000 kr</div>
+                                    </div>
+                                    <div className="px-4">
+                                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                                            <span className="text-primary font-bold">VS</span>
+                                        </div>
+                                    </div>
+                                    <div className="text-center flex-1">
+                                        <div className="font-bold text-lg mb-1">Polestar 2</div>
+                                        <div className="text-sm text-muted-foreground">från 499,000 kr</div>
+                                    </div>
+                                </div>
+                                <Button variant="outline" className="w-full" size="sm">
+                                    <BarChart3 className="h-4 w-4 mr-2" />
+                                    Jämför nu
+                                </Button>
+                            </CardContent>
+                        </Card>
+
+                        <Card className="cursor-pointer hover:shadow-md transition-shadow">
+                            <CardContent className="pt-6">
+                                <div className="flex items-center justify-between mb-4">
+                                    <div className="text-center flex-1">
+                                        <div className="font-bold text-lg mb-1">Audi Q5</div>
+                                        <div className="text-sm text-muted-foreground">från 599,000 kr</div>
+                                    </div>
+                                    <div className="px-4">
+                                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                                            <span className="text-primary font-bold">VS</span>
+                                        </div>
+                                    </div>
+                                    <div className="text-center flex-1">
+                                        <div className="font-bold text-lg mb-1">Mercedes GLC</div>
+                                        <div className="text-sm text-muted-foreground">från 649,000 kr</div>
+                                    </div>
+                                </div>
+                                <Button variant="outline" className="w-full" size="sm">
+                                    <BarChart3 className="h-4 w-4 mr-2" />
+                                    Jämför nu
+                                </Button>
+                            </CardContent>
+                        </Card>
+                    </div>
+
+                    <div className="text-center mt-8">
+                        <Button variant="link" asChild>
+                            <Link href="/cars">
+                                Se alla jämförelser
+                                <ArrowRight className="ml-2 h-4 w-4" />
+                            </Link>
+                        </Button>
+                    </div>
+                </div>
+            </section>
+
             {/* Needs Analysis CTA Section */}
-            <section className="py-20">
+            <section className="py-20 bg-muted/30">
                 <div className="container mx-auto px-4">
                     <div className="max-w-4xl mx-auto bg-gradient-to-r from-primary/10 to-primary/5 rounded-2xl p-12">
                         <div className="grid lg:grid-cols-2 gap-8 items-center">

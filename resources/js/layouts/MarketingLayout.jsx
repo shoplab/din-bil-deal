@@ -20,11 +20,12 @@ export default function MarketingLayout({ children }) {
 
     const navigation = [
         { name: 'Hem', href: '/' },
-        { name: 'Bilar till salu', href: '/cars' },
+        { name: 'Köp bil', href: '/cars' },
         { name: 'Sälj din bil', href: '/sell' },
+        { name: 'Recensioner', href: '/cars' },
+        { name: 'Jämför bilar', href: '/cars' },
         { name: 'Finansiering', href: '/financing' },
         { name: 'Om oss', href: '/about' },
-        { name: 'Kontakt', href: '/contact' },
     ];
 
     const isActive = (href) => {
