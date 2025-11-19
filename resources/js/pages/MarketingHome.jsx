@@ -1,11 +1,13 @@
+import { useState } from 'react';
 import { Head, Link } from '@inertiajs/react';
 import MarketingLayout from '@/layouts/MarketingLayout';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import CarCard from '@/components/CarCard';
+import FormSlideIn from '@/components/FormSlideIn';
 import {
     Search,
     Car,
@@ -16,23 +18,31 @@ import {
     CheckCircle,
     TrendingUp,
     ThumbsUp,
-    Clock,
-    DollarSign,
-    Star,
-    PlayCircle,
-    BarChart3,
     FileText,
     Sparkles
 } from 'lucide-react';
 
-export default function MarketingHome({ cars = [], featuredCars = [] }) {
+export default function MarketingHome({ cars = [], featuredCars = [], carFinderForm = null }) {
+    const [showFormSlideIn, setShowFormSlideIn] = useState(false);
     return (
         <MarketingLayout>
             <Head title="Hem - Din Bil Deal" />
-            
+
             {/* Hero Section */}
-            <section className="relative bg-gradient-to-br from-primary/10 via-primary/5 to-background py-16 lg:py-28">
-                <div className="container mx-auto px-4">
+            <section className="relative py-16 lg:py-28 overflow-hidden">
+                {/* Background Image with Overlay */}
+                <div
+                    className="absolute inset-0 bg-cover bg-top bg-no-repeat"
+                    style={{
+                        backgroundImage: 'url(/img/businessman-in-motor-show-2024-10-18-09-08-35-utc.jpg)',
+                    }}
+                >
+                    {/* Dark overlay for better text readability */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-background/70 via-background/35 to-background/0" />
+                </div>
+
+                {/* Content */}
+                <div className="container mx-auto px-4 relative z-10">
                     <div className="grid lg:grid-cols-2 gap-12 items-center">
                         <div>
                             <Badge className="mb-4 bg-primary/10 text-primary hover:bg-primary/20">
@@ -40,9 +50,9 @@ export default function MarketingHome({ cars = [], featuredCars = [] }) {
                                 Sveriges största bilmarknadsplats
                             </Badge>
                             <h1 className="text-4xl lg:text-6xl font-bold tracking-tight text-foreground mb-6">
-                                Köp eller sälj din bil
+                            Personlig bilexpert
                                 <span className="text-primary block mt-2">
-                                    utan krångel
+                                – en trygg bilaffär
                                 </span>
                             </h1>
                             <p className="text-xl text-muted-foreground mb-6 leading-relaxed">
@@ -64,20 +74,22 @@ export default function MarketingHome({ cars = [], featuredCars = [] }) {
                                 </div>
                             </div>
                             <div className="flex flex-col sm:flex-row gap-4">
-                                <Button size="lg" asChild className="text-base">
-                                    <Link href="/cars">
-                                        Hitta din nästa bil
-                                        <ArrowRight className="ml-2 h-5 w-5" />
-                                    </Link>
+                                <Button
+                                    size="lg"
+                                    className="text-base"
+                                    onClick={() => setShowFormSlideIn(true)}
+                                >
+                                    Hitta din nästa bil
+                                    <ArrowRight className="ml-2 h-5 w-5" />
                                 </Button>
                                 <Button size="lg" variant="outline" asChild className="text-base">
                                     <Link href="/sell">Sälj din bil</Link>
                                 </Button>
                             </div>
                         </div>
-                        
+
                         {/* Car Search Widget */}
-                        <div className="lg:justify-self-end w-full max-w-md">
+                        {/* <div className="lg:justify-self-end w-full max-w-md">
                             <Card className="shadow-xl">
                                 <CardHeader>
                                     <CardTitle className="flex items-center">
@@ -105,7 +117,7 @@ export default function MarketingHome({ cars = [], featuredCars = [] }) {
                                             </SelectContent>
                                         </Select>
                                     </div>
-                                    
+
                                     <div className="grid grid-cols-2 gap-4">
                                         <div>
                                             <label className="text-sm font-medium mb-2 block">Pris från</label>
@@ -116,7 +128,7 @@ export default function MarketingHome({ cars = [], featuredCars = [] }) {
                                             <Input type="number" placeholder="500,000" />
                                         </div>
                                     </div>
-                                    
+
                                     <div>
                                         <label className="text-sm font-medium mb-2 block">Årsmodell</label>
                                         <Select>
@@ -132,20 +144,20 @@ export default function MarketingHome({ cars = [], featuredCars = [] }) {
                                             </SelectContent>
                                         </Select>
                                     </div>
-                                    
+
                                     <Button className="w-full" size="lg">
                                         <Search className="mr-2 h-4 w-4" />
                                         Sök bilar
                                     </Button>
                                 </CardContent>
                             </Card>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </section>
 
             {/* Statistics Section */}
-            <section className="py-12 border-b bg-muted/20">
+            {/* <section className="py-12 border-b bg-muted/20">
                 <div className="container mx-auto px-4">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
                         <div className="text-center">
@@ -182,7 +194,7 @@ export default function MarketingHome({ cars = [], featuredCars = [] }) {
                         </div>
                     </div>
                 </div>
-            </section>
+            </section> */}
 
             {/* How It Works Section */}
             <section className="py-20 bg-background">
@@ -261,7 +273,7 @@ export default function MarketingHome({ cars = [], featuredCars = [] }) {
                             Vi gör bilköp och bilförsäljning enkelt, säkert och transparent
                         </p>
                     </div>
-                    
+
                     <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                         <div className="text-center">
                             <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -272,7 +284,7 @@ export default function MarketingHome({ cars = [], featuredCars = [] }) {
                                 Alla bilar genomgår noggrann kontroll och verifiering innan publicering
                             </p>
                         </div>
-                        
+
                         <div className="text-center">
                             <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                                 <Award className="h-8 w-8 text-primary" />
@@ -282,7 +294,7 @@ export default function MarketingHome({ cars = [], featuredCars = [] }) {
                                 Vi garanterar marknadens bästa priser genom vårt nätverk av återförsäljare
                             </p>
                         </div>
-                        
+
                         <div className="text-center">
                             <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                                 <Users className="h-8 w-8 text-primary" />
@@ -292,7 +304,7 @@ export default function MarketingHome({ cars = [], featuredCars = [] }) {
                                 Våra bilexperter hjälper dig genom hela köp- eller säljprocessen
                             </p>
                         </div>
-                        
+
                         <div className="text-center">
                             <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                                 <CheckCircle className="h-8 w-8 text-primary" />
@@ -325,7 +337,7 @@ export default function MarketingHome({ cars = [], featuredCars = [] }) {
                             </Link>
                         </Button>
                     </div>
-                    
+
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {featuredCars.length > 0 ? featuredCars.map((car) => (
                             <CarCard
@@ -366,223 +378,6 @@ export default function MarketingHome({ cars = [], featuredCars = [] }) {
                 </div>
             </section>
 
-            {/* Car Reviews Section */}
-            <section className="py-20 bg-muted/30">
-                <div className="container mx-auto px-4">
-                    <div className="flex justify-between items-center mb-12">
-                        <div>
-                            <h2 className="text-3xl lg:text-4xl font-bold mb-4">
-                                Senaste bilrecensionerna
-                            </h2>
-                            <p className="text-xl text-muted-foreground">
-                                Expertrecensioner och djupgående tester av nya bilar
-                            </p>
-                        </div>
-                        <Button variant="outline" asChild>
-                            <Link href="/cars">
-                                Alla recensioner
-                                <ArrowRight className="ml-2 h-4 w-4" />
-                            </Link>
-                        </Button>
-                    </div>
-
-                    <div className="grid md:grid-cols-3 gap-8">
-                        {/* Review Card 1 */}
-                        <Card className="overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow">
-                            <div className="aspect-video bg-gradient-to-br from-blue-100 to-blue-50 relative">
-                                <div className="absolute inset-0 flex items-center justify-center">
-                                    <PlayCircle className="h-16 w-16 text-primary/60 group-hover:text-primary transition-colors" />
-                                </div>
-                                <Badge className="absolute top-3 right-3 bg-primary">
-                                    <Star className="h-3 w-3 mr-1 fill-current" />
-                                    4.8
-                                </Badge>
-                            </div>
-                            <CardHeader>
-                                <CardTitle className="text-xl">Volvo XC90 2024</CardTitle>
-                                <CardDescription className="flex items-center gap-2">
-                                    <Clock className="h-4 w-4" />
-                                    15 min läsning
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-sm text-muted-foreground mb-4">
-                                    En omfattande genomgång av Volvos största SUV. Vi testar prestanda,
-                                    komfort och den senaste tekniken.
-                                </p>
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                        <BarChart3 className="h-4 w-4 text-primary" />
-                                        <span className="text-sm font-medium">Jämför med andra</span>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-
-                        {/* Review Card 2 */}
-                        <Card className="overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow">
-                            <div className="aspect-video bg-gradient-to-br from-green-100 to-green-50 relative">
-                                <div className="absolute inset-0 flex items-center justify-center">
-                                    <PlayCircle className="h-16 w-16 text-primary/60 group-hover:text-primary transition-colors" />
-                                </div>
-                                <Badge className="absolute top-3 right-3 bg-primary">
-                                    <Star className="h-3 w-3 mr-1 fill-current" />
-                                    4.9
-                                </Badge>
-                            </div>
-                            <CardHeader>
-                                <CardTitle className="text-xl">Tesla Model Y 2024</CardTitle>
-                                <CardDescription className="flex items-center gap-2">
-                                    <Clock className="h-4 w-4" />
-                                    12 min läsning
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-sm text-muted-foreground mb-4">
-                                    Vår expertrecension av Sveriges mest sålda elbil. Räckvidd,
-                                    prestanda och praktiska egenskaper i fokus.
-                                </p>
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                        <BarChart3 className="h-4 w-4 text-primary" />
-                                        <span className="text-sm font-medium">Jämför med andra</span>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-
-                        {/* Review Card 3 */}
-                        <Card className="overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow">
-                            <div className="aspect-video bg-gradient-to-br from-purple-100 to-purple-50 relative">
-                                <div className="absolute inset-0 flex items-center justify-center">
-                                    <PlayCircle className="h-16 w-16 text-primary/60 group-hover:text-primary transition-colors" />
-                                </div>
-                                <Badge className="absolute top-3 right-3 bg-primary">
-                                    <Star className="h-3 w-3 mr-1 fill-current" />
-                                    4.7
-                                </Badge>
-                            </div>
-                            <CardHeader>
-                                <CardTitle className="text-xl">BMW iX 2024</CardTitle>
-                                <CardDescription className="flex items-center gap-2">
-                                    <Clock className="h-4 w-4" />
-                                    18 min läsning
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-sm text-muted-foreground mb-4">
-                                    BMWs flaggskepp bland elbilar testas. Lyx, teknik och körupplevelse
-                                    under luppen.
-                                </p>
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                        <BarChart3 className="h-4 w-4 text-primary" />
-                                        <span className="text-sm font-medium">Jämför med andra</span>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </div>
-                </div>
-            </section>
-
-            {/* Popular Comparisons Section */}
-            <section className="py-20 bg-background">
-                <div className="container mx-auto px-4">
-                    <div className="text-center mb-12">
-                        <h2 className="text-3xl lg:text-4xl font-bold mb-4">
-                            Populära jämförelser
-                        </h2>
-                        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                            Se hur olika bilar står sig mot varandra
-                        </p>
-                    </div>
-
-                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-                        <Card className="cursor-pointer hover:shadow-md transition-shadow">
-                            <CardContent className="pt-6">
-                                <div className="flex items-center justify-between mb-4">
-                                    <div className="text-center flex-1">
-                                        <div className="font-bold text-lg mb-1">Volvo XC90</div>
-                                        <div className="text-sm text-muted-foreground">från 849,000 kr</div>
-                                    </div>
-                                    <div className="px-4">
-                                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                                            <span className="text-primary font-bold">VS</span>
-                                        </div>
-                                    </div>
-                                    <div className="text-center flex-1">
-                                        <div className="font-bold text-lg mb-1">BMW X5</div>
-                                        <div className="text-sm text-muted-foreground">från 899,000 kr</div>
-                                    </div>
-                                </div>
-                                <Button variant="outline" className="w-full" size="sm">
-                                    <BarChart3 className="h-4 w-4 mr-2" />
-                                    Jämför nu
-                                </Button>
-                            </CardContent>
-                        </Card>
-
-                        <Card className="cursor-pointer hover:shadow-md transition-shadow">
-                            <CardContent className="pt-6">
-                                <div className="flex items-center justify-between mb-4">
-                                    <div className="text-center flex-1">
-                                        <div className="font-bold text-lg mb-1">Tesla Model 3</div>
-                                        <div className="text-sm text-muted-foreground">från 549,000 kr</div>
-                                    </div>
-                                    <div className="px-4">
-                                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                                            <span className="text-primary font-bold">VS</span>
-                                        </div>
-                                    </div>
-                                    <div className="text-center flex-1">
-                                        <div className="font-bold text-lg mb-1">Polestar 2</div>
-                                        <div className="text-sm text-muted-foreground">från 499,000 kr</div>
-                                    </div>
-                                </div>
-                                <Button variant="outline" className="w-full" size="sm">
-                                    <BarChart3 className="h-4 w-4 mr-2" />
-                                    Jämför nu
-                                </Button>
-                            </CardContent>
-                        </Card>
-
-                        <Card className="cursor-pointer hover:shadow-md transition-shadow">
-                            <CardContent className="pt-6">
-                                <div className="flex items-center justify-between mb-4">
-                                    <div className="text-center flex-1">
-                                        <div className="font-bold text-lg mb-1">Audi Q5</div>
-                                        <div className="text-sm text-muted-foreground">från 599,000 kr</div>
-                                    </div>
-                                    <div className="px-4">
-                                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                                            <span className="text-primary font-bold">VS</span>
-                                        </div>
-                                    </div>
-                                    <div className="text-center flex-1">
-                                        <div className="font-bold text-lg mb-1">Mercedes GLC</div>
-                                        <div className="text-sm text-muted-foreground">från 649,000 kr</div>
-                                    </div>
-                                </div>
-                                <Button variant="outline" className="w-full" size="sm">
-                                    <BarChart3 className="h-4 w-4 mr-2" />
-                                    Jämför nu
-                                </Button>
-                            </CardContent>
-                        </Card>
-                    </div>
-
-                    <div className="text-center mt-8">
-                        <Button variant="link" asChild>
-                            <Link href="/cars">
-                                Se alla jämförelser
-                                <ArrowRight className="ml-2 h-4 w-4" />
-                            </Link>
-                        </Button>
-                    </div>
-                </div>
-            </section>
-
             {/* Needs Analysis CTA Section */}
             <section className="py-20 bg-muted/30">
                 <div className="container mx-auto px-4">
@@ -593,8 +388,8 @@ export default function MarketingHome({ cars = [], featuredCars = [] }) {
                                     Osäker på vilken bil som passar dig?
                                 </h2>
                                 <p className="text-lg text-muted-foreground mb-6">
-                                    Vår behovsanalys hjälper dig hitta den perfekta bilen baserat på dina 
-                                    behov, budget och livsstil. Svara på några enkla frågor och få 
+                                    Vår behovsanalys hjälper dig hitta den perfekta bilen baserat på dina
+                                    behov, budget och livsstil. Svara på några enkla frågor och få
                                     personliga rekommendationer.
                                 </p>
                                 <Button size="lg" asChild>
@@ -635,11 +430,11 @@ export default function MarketingHome({ cars = [], featuredCars = [] }) {
                             Hittat en bil du vill köpa?
                         </h2>
                         <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                            Låt oss hjälpa dig med hela köpprocessen. Vi förhandlar pris, kontrollerar 
+                            Låt oss hjälpa dig med hela köpprocessen. Vi förhandlar pris, kontrollerar
                             bilens skick och säkerställer en trygg affär.
                         </p>
                     </div>
-                    
+
                     <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
                         <Card className="text-center">
                             <CardHeader>
@@ -657,7 +452,7 @@ export default function MarketingHome({ cars = [], featuredCars = [] }) {
                                 </Button>
                             </CardContent>
                         </Card>
-                        
+
                         <Card className="text-center">
                             <CardHeader>
                                 <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
@@ -672,7 +467,7 @@ export default function MarketingHome({ cars = [], featuredCars = [] }) {
                                 <p className="text-sm font-semibold text-primary">Spara upp till 20%</p>
                             </CardContent>
                         </Card>
-                        
+
                         <Card className="text-center">
                             <CardHeader>
                                 <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
@@ -688,7 +483,7 @@ export default function MarketingHome({ cars = [], featuredCars = [] }) {
                             </CardContent>
                         </Card>
                     </div>
-                    
+
                     <div className="text-center mt-8">
                         <Button size="lg" asChild>
                             <Link href="/car-deal">
@@ -722,6 +517,15 @@ export default function MarketingHome({ cars = [], featuredCars = [] }) {
                     </div>
                 </div>
             </section>
+
+            {/* Form Slide-in */}
+            {carFinderForm && (
+                <FormSlideIn
+                    open={showFormSlideIn}
+                    onClose={() => setShowFormSlideIn(false)}
+                    form={carFinderForm}
+                />
+            )}
         </MarketingLayout>
     );
 }

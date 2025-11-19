@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Models\Car;
+use App\Models\Form;
 use App\Models\User;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Cache;
@@ -36,11 +37,18 @@ Route::get('/', function () {
             ];
         });
 
+    // Load the car finder form
+    $carFinderForm = Form::where('slug', 'hitta-din-nasta-bil')
+        ->where('is_active', true)
+        ->with('questions.options')
+        ->first();
+
     return Inertia::render('MarketingHome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'cars' => [],
         'featuredCars' => $featuredCars,
+        'carFinderForm' => $carFinderForm,
     ]);
 })->name('home');
 
@@ -334,10 +342,20 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+// Forms Routes (public)
+Route::get('/forms/{slug}', [App\Http\Controllers\FormController::class, 'show'])->name('forms.show');
+Route::post('/forms/{slug}/submit', [App\Http\Controllers\FormController::class, 'submit'])->name('forms.submit');
+
+// Callback Request (Boka samtal)
+Route::post('/callback-request', [App\Http\Controllers\CallbackController::class, 'store'])->name('callback.store');
+
 // Admin Routes
 Route::middleware(['auth', App\Http\Middleware\AdminMiddleware::class])->prefix('admin')->name('admin.')->group(function () {
     // Dashboard
     Route::get('/', [App\Http\Controllers\Admin\AdminDashboardController::class, 'index'])->name('dashboard');
+
+    // Forms Management
+    Route::resource('forms', App\Http\Controllers\Admin\FormController::class);
     
     // Cars Management
     Route::resource('cars', App\Http\Controllers\Admin\CarController::class);
