@@ -26,6 +26,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Plus, MoreVertical, Edit, Trash2, Eye, Copy } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function FormsIndex({ forms }) {
   const handleDelete = (id) => {
@@ -34,11 +35,29 @@ export default function FormsIndex({ forms }) {
     }
   };
 
-  const handleCopyLink = (slug) => {
-    const url = route('forms.show', slug);
-    const fullUrl = window.location.origin + url;
-    navigator.clipboard.writeText(fullUrl);
-    alert('Länk kopierad till urklipp!');
+  const handleCopyLink = (e, slug) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    // Copy just the slug
+    const textArea = document.createElement('textarea');
+    textArea.value = slug;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    document.body.appendChild(textArea);
+    textArea.select();
+
+    try {
+      document.execCommand('copy');
+      toast.success('Slug kopierad!', {
+        description: slug,
+      });
+    } catch (err) {
+      console.error('Failed to copy:', err);
+      toast.error('Kunde inte kopiera slug');
+    }
+
+    document.body.removeChild(textArea);
   };
 
   return (
@@ -95,12 +114,27 @@ export default function FormsIndex({ forms }) {
                 </TableHeader>
                 <TableBody>
                   {forms.map((form) => (
-                    <TableRow key={form.id}>
+                    <TableRow
+                      key={form.id}
+                      className="cursor-pointer"
+                      onClick={() => router.visit(route('admin.forms.edit', form.id))}
+                    >
                       <TableCell className="font-medium">{form.title}</TableCell>
                       <TableCell>
-                        <code className="text-xs bg-muted px-2 py-1 rounded">
-                          {form.slug}
-                        </code>
+                        <div className="flex items-center gap-2">
+                          <code className="text-xs bg-muted px-2 py-1 rounded">
+                            {form.slug}
+                          </code>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={(e) => handleCopyLink(e, form.slug)}
+                            className="h-7 w-7 p-0"
+                            title="Kopiera länk"
+                          >
+                            <Copy className="h-4 w-4 text-muted-foreground hover:text-foreground" />
+                          </Button>
+                        </div>
                       </TableCell>
                       <TableCell>{form.questions.length} frågor</TableCell>
                       <TableCell>
@@ -112,43 +146,45 @@ export default function FormsIndex({ forms }) {
                         {new Date(form.created_at).toLocaleDateString('sv-SE')}
                       </TableCell>
                       <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm">
-                              <MoreVertical className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Åtgärder</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem asChild>
-                              <Link href={route('forms.show', form.slug)}>
-                                <Eye className="h-4 w-4 mr-2" />
-                                Visa formulär
-                              </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() => handleCopyLink(form.slug)}
-                            >
-                              <Copy className="h-4 w-4 mr-2" />
-                              Kopiera länk
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem asChild>
-                              <Link href={route('admin.forms.edit', form.id)}>
-                                <Edit className="h-4 w-4 mr-2" />
-                                Redigera
-                              </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() => handleDelete(form.id)}
-                              className="text-red-600"
-                            >
-                              <Trash2 className="h-4 w-4 mr-2" />
-                              Ta bort
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                        <div className="flex items-center justify-end gap-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            asChild
+                            onClick={(e) => e.stopPropagation()}
+                            className="h-8 w-8 p-0"
+                          >
+                            <Link href={route('forms.show', form.slug)}>
+                              <Eye className="h-4 w-4 text-muted-foreground hover:text-foreground" />
+                            </Link>
+                          </Button>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={(e) => e.stopPropagation()}
+                                className="h-8 w-8 p-0"
+                              >
+                                <MoreVertical className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuLabel>Åtgärder</DropdownMenuLabel>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDelete(form.id);
+                                }}
+                                className="text-red-600"
+                              >
+                                <Trash2 className="h-4 w-4 mr-2" />
+                                Ta bort
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}

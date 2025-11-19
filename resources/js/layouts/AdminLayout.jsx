@@ -28,6 +28,7 @@ import {
     ClipboardList
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Toaster } from '@/components/ui/sonner';
 
 const navigation = [
     {
@@ -295,17 +296,18 @@ export default function AdminLayout({ children, title }) {
                 {/* Page content */}
                 <main className="py-10">
                     <div className="px-4 sm:px-6 lg:px-8">
-                        {title && (
+                        {/* {title && (
                             <div className="mb-8">
                                 <h1 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
                                     {title}
                                 </h1>
                             </div>
-                        )}
+                        )} */}
                         {children}
                     </div>
                 </main>
             </div>
+            <Toaster position="top-center" />
         </div>
     );
 }

@@ -37,7 +37,7 @@ export default function FormCreate() {
     ]);
   };
 
-  const removeQuestion = (index: number) => {
+  const removeQuestion = (index) => {
     const newQuestions = data.questions.filter((_, i) => i !== index);
     setData('questions', newQuestions.map((q, i) => ({ ...q, order: i + 1 })));
   };
