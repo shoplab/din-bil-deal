@@ -24,4 +24,4 @@ yarn-error.log
 /.vscode
 /.zed
 .DS_Store
-.DS_Store
+**/.DS_Store
