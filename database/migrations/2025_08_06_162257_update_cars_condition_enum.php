@@ -88,8 +88,50 @@ return new class extends Migration
             DB::statement('CREATE INDEX IF NOT EXISTS cars_make_index ON cars(make)');
             DB::statement('CREATE INDEX IF NOT EXISTS cars_model_index ON cars(model)');
             DB::statement('CREATE INDEX IF NOT EXISTS cars_variant_index ON cars(variant)');
+        } elseif (DB::getDriverName() === 'pgsql') {
+            // PostgreSQL approach: Handle ENUMs properly with default values
+            DB::statement("
+                DO $$ 
+                BEGIN
+                    -- Drop the default constraint first
+                    ALTER TABLE cars ALTER COLUMN condition DROP DEFAULT;
+                    
+                    -- Create a new enum type with the updated values
+                    CREATE TYPE car_condition_new AS ENUM ('new', 'excellent', 'very_good', 'good', 'fair', 'poor');
+                    
+                    -- Alter the column to use the new type
+                    ALTER TABLE cars 
+                        ALTER COLUMN condition TYPE car_condition_new 
+                        USING condition::text::car_condition_new;
+                    
+                    -- Re-add the default value
+                    ALTER TABLE cars ALTER COLUMN condition SET DEFAULT 'good'::car_condition_new;
+                    
+                    -- Drop the old type if it exists
+                    DROP TYPE IF EXISTS car_condition CASCADE;
+                    
+                    -- Rename the new type to the standard name
+                    ALTER TYPE car_condition_new RENAME TO car_condition;
+                    
+                    -- Update the default to use the renamed type
+                    ALTER TABLE cars ALTER COLUMN condition SET DEFAULT 'good'::car_condition;
+                EXCEPTION
+                    WHEN duplicate_object THEN
+                        -- If the type already exists, convert to varchar first
+                        ALTER TABLE cars ALTER COLUMN condition DROP DEFAULT;
+                        ALTER TABLE cars 
+                            ALTER COLUMN condition TYPE VARCHAR(50);
+                        DROP TYPE IF EXISTS car_condition CASCADE;
+                        DROP TYPE IF EXISTS car_condition_new CASCADE;
+                        CREATE TYPE car_condition AS ENUM ('new', 'excellent', 'very_good', 'good', 'fair', 'poor');
+                        ALTER TABLE cars 
+                            ALTER COLUMN condition TYPE car_condition 
+                            USING condition::car_condition;
+                        ALTER TABLE cars ALTER COLUMN condition SET DEFAULT 'good'::car_condition;
+                END $$;
+            ");
         } else {
-            // For MySQL/PostgreSQL
+            // For MySQL
             DB::statement("ALTER TABLE cars MODIFY COLUMN condition ENUM('new', 'excellent', 'very_good', 'good', 'fair', 'poor') DEFAULT 'good'");
         }
     }
@@ -167,7 +209,54 @@ return new class extends Migration
                 INSERT INTO cars SELECT * FROM cars_new WHERE condition != 'very_good';
                 DROP TABLE cars_new;
             ");
+        } elseif (DB::getDriverName() === 'pgsql') {
+            // PostgreSQL approach: Revert to original enum without 'very_good'
+            DB::statement("
+                DO $$ 
+                BEGIN
+                    -- Drop the default constraint first
+                    ALTER TABLE cars ALTER COLUMN condition DROP DEFAULT;
+                    
+                    -- Update any 'very_good' values to 'good' before changing type
+                    UPDATE cars SET condition = 'good' WHERE condition = 'very_good';
+                    
+                    -- Create the old enum type
+                    CREATE TYPE car_condition_old AS ENUM ('new', 'excellent', 'good', 'fair', 'poor');
+                    
+                    -- Alter the column to use the old type
+                    ALTER TABLE cars 
+                        ALTER COLUMN condition TYPE car_condition_old 
+                        USING condition::text::car_condition_old;
+                    
+                    -- Re-add the default value
+                    ALTER TABLE cars ALTER COLUMN condition SET DEFAULT 'good'::car_condition_old;
+                    
+                    -- Drop the current type
+                    DROP TYPE IF EXISTS car_condition CASCADE;
+                    
+                    -- Rename the old type to the standard name
+                    ALTER TYPE car_condition_old RENAME TO car_condition;
+                    
+                    -- Update the default to use the renamed type
+                    ALTER TABLE cars ALTER COLUMN condition SET DEFAULT 'good'::car_condition;
+                EXCEPTION
+                    WHEN duplicate_object THEN
+                        -- If issues, convert to varchar and recreate
+                        ALTER TABLE cars ALTER COLUMN condition DROP DEFAULT;
+                        UPDATE cars SET condition = 'good' WHERE condition = 'very_good';
+                        ALTER TABLE cars 
+                            ALTER COLUMN condition TYPE VARCHAR(50);
+                        DROP TYPE IF EXISTS car_condition CASCADE;
+                        DROP TYPE IF EXISTS car_condition_old CASCADE;
+                        CREATE TYPE car_condition AS ENUM ('new', 'excellent', 'good', 'fair', 'poor');
+                        ALTER TABLE cars 
+                            ALTER COLUMN condition TYPE car_condition 
+                            USING condition::car_condition;
+                        ALTER TABLE cars ALTER COLUMN condition SET DEFAULT 'good'::car_condition;
+                END $$;
+            ");
         } else {
+            // For MySQL
             DB::statement("ALTER TABLE cars MODIFY COLUMN condition ENUM('new', 'excellent', 'good', 'fair', 'poor') DEFAULT 'good'");
         }
     }

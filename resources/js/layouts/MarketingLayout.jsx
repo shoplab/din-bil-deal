@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, usePage } from '@inertiajs/react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { useAppearance } from '@/hooks/use-appearance';
 import {
     Menu,
     X,
@@ -10,12 +11,16 @@ import {
     MapPin,
     Facebook,
     Instagram,
-    Twitter
+    Twitter,
+    Sun,
+    Moon,
+    Monitor
 } from 'lucide-react';
 
 export default function MarketingLayout({ children }) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const { url } = usePage();
+    const { appearance, updateAppearance } = useAppearance();
 
     const navigation = [
         { name: 'Hem', href: '/' },
@@ -31,6 +36,19 @@ export default function MarketingLayout({ children }) {
         if (href === '/' && url === '/') return true;
         if (href !== '/' && url.startsWith(href)) return true;
         return false;
+    };
+
+    const cycleAppearance = () => {
+        const modes = ['light', 'dark', 'system'];
+        const currentIndex = modes.indexOf(appearance);
+        const nextIndex = (currentIndex + 1) % modes.length;
+        updateAppearance(modes[nextIndex]);
+    };
+
+    const getThemeIcon = () => {
+        if (appearance === 'light') return Sun;
+        if (appearance === 'dark') return Moon;
+        return Monitor;
     };
 
     return (
@@ -67,6 +85,17 @@ export default function MarketingLayout({ children }) {
 
                     {/* Desktop CTA */}
                     <div className="ml-auto hidden md:flex items-center space-x-4">
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={cycleAppearance}
+                            aria-label={`Switch to ${appearance === 'light' ? 'dark' : appearance === 'dark' ? 'system' : 'light'} theme`}
+                        >
+                            {(() => {
+                                const Icon = getThemeIcon();
+                                return <Icon className="h-5 w-5" />;
+                            })()}
+                        </Button>
                         <Button variant="ghost" asChild>
                             <Link href="/customer/login">Logga in</Link>
                         </Button>
@@ -110,6 +139,24 @@ export default function MarketingLayout({ children }) {
                                 </Link>
                             ))}
                             <div className="mt-4 flex flex-col space-y-2 px-3">
+                                <Button
+                                    variant="ghost"
+                                    className="justify-start"
+                                    onClick={() => {
+                                        cycleAppearance();
+                                        setMobileMenuOpen(false);
+                                    }}
+                                >
+                                    {(() => {
+                                        const Icon = getThemeIcon();
+                                        return (
+                                            <>
+                                                <Icon className="h-5 w-5 mr-2" />
+                                                {appearance === 'light' ? 'Ljust tema' : appearance === 'dark' ? 'Mörkt tema' : 'Systemtema'}
+                                            </>
+                                        );
+                                    })()}
+                                </Button>
                                 <Button variant="ghost" asChild className="justify-start">
                                     <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
                                         Logga in
@@ -243,7 +290,7 @@ export default function MarketingLayout({ children }) {
                     <div className="mt-8 pt-8 border-t">
                         <div className="flex flex-col md:flex-row justify-between items-center">
                             <p className="text-sm text-muted-foreground">
-                                © 2024 Din Bil Deal. Alla rättigheter förbehållna.
+                                © {new Date().getFullYear()} Din Bil Deal. Alla rättigheter förbehållna.
                             </p>
                             <div className="flex space-x-6 mt-4 md:mt-0">
                                 <Link
