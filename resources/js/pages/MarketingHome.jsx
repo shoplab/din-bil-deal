@@ -1,55 +1,95 @@
+import { useState } from 'react';
 import { Head, Link } from '@inertiajs/react';
 import MarketingLayout from '@/layouts/MarketingLayout';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
 import CarCard from '@/components/CarCard';
-import { 
-    Search, 
-    Car, 
-    Shield, 
-    Award, 
-    Users, 
+import FormSlideIn from '@/components/FormSlideIn';
+import {
+    Search,
+    Car,
+    Shield,
+    Award,
+    Users,
     ArrowRight,
-    CheckCircle
+    CheckCircle,
+    TrendingUp,
+    ThumbsUp,
+    FileText,
+    Sparkles
 } from 'lucide-react';
 
-export default function MarketingHome({ cars = [], featuredCars = [] }) {
+export default function MarketingHome({ cars = [], featuredCars = [], carFinderForm = null }) {
+    const [showFormSlideIn, setShowFormSlideIn] = useState(false);
     return (
         <MarketingLayout>
             <Head title="Hem - Din Bil Deal" />
-            
+
             {/* Hero Section */}
-            <section className="relative bg-gradient-to-r from-primary/10 via-primary/5 to-background py-20 lg:py-32">
-                <div className="container mx-auto px-4">
+            <section className="relative py-16 lg:py-28 overflow-hidden">
+                {/* Background Image with Overlay */}
+                <div
+                    className="absolute inset-0 bg-cover bg-top bg-no-repeat"
+                    style={{
+                        backgroundImage: 'url(/img/businessman-in-motor-show-2024-10-18-09-08-35-utc.jpg)',
+                    }}
+                >
+                    {/* Dark overlay for better text readability */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-background/70 via-background/35 to-background/0" />
+                </div>
+
+                {/* Content */}
+                <div className="container mx-auto px-4 relative z-10">
                     <div className="grid lg:grid-cols-2 gap-12 items-center">
                         <div>
+                            <Badge className="mb-4 bg-primary/10 text-primary hover:bg-primary/20">
+                                <Sparkles className="h-3 w-3 mr-1" />
+                                Sveriges största bilmarknadsplats
+                            </Badge>
                             <h1 className="text-4xl lg:text-6xl font-bold tracking-tight text-foreground mb-6">
-                                Hitta din
-                                <span className="text-primary block">
-                                    drömbil idag
+                            Personlig bilexpert
+                                <span className="text-primary block mt-2">
+                                – en trygg bilaffär
                                 </span>
                             </h1>
-                            <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
-                                Sveriges mest pålitliga plattform för bilköp och bilförsäljning. 
-                                Över 10,000 verifierade bilar från seriösa säljare.
+                            <p className="text-xl text-muted-foreground mb-6 leading-relaxed">
+                                Låt hundratals bilhandlare konkurrera om ditt köp eller försäljning.
+                                Få bästa pris utan förhandling.
                             </p>
+                            <div className="flex items-center gap-6 mb-8">
+                                <div className="flex items-center gap-2">
+                                    <CheckCircle className="h-5 w-5 text-primary" />
+                                    <span className="text-sm font-medium">Inga avgifter</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <CheckCircle className="h-5 w-5 text-primary" />
+                                    <span className="text-sm font-medium">Snabbt & enkelt</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <CheckCircle className="h-5 w-5 text-primary" />
+                                    <span className="text-sm font-medium">Trygg affär</span>
+                                </div>
+                            </div>
                             <div className="flex flex-col sm:flex-row gap-4">
-                                <Button size="lg" asChild>
-                                    <Link href="/cars">
-                                        Bläddra bland bilar
-                                        <ArrowRight className="ml-2 h-5 w-5" />
-                                    </Link>
+                                <Button
+                                    size="lg"
+                                    className="text-base"
+                                    onClick={() => setShowFormSlideIn(true)}
+                                >
+                                    Hitta din nästa bil
+                                    <ArrowRight className="ml-2 h-5 w-5" />
                                 </Button>
-                                <Button size="lg" variant="outline" asChild>
+                                <Button size="lg" variant="outline" asChild className="text-base">
                                     <Link href="/sell">Sälj din bil</Link>
                                 </Button>
                             </div>
                         </div>
-                        
+
                         {/* Car Search Widget */}
-                        <div className="lg:justify-self-end w-full max-w-md">
+                        {/* <div className="lg:justify-self-end w-full max-w-md">
                             <Card className="shadow-xl">
                                 <CardHeader>
                                     <CardTitle className="flex items-center">
@@ -77,7 +117,7 @@ export default function MarketingHome({ cars = [], featuredCars = [] }) {
                                             </SelectContent>
                                         </Select>
                                     </div>
-                                    
+
                                     <div className="grid grid-cols-2 gap-4">
                                         <div>
                                             <label className="text-sm font-medium mb-2 block">Pris från</label>
@@ -88,7 +128,7 @@ export default function MarketingHome({ cars = [], featuredCars = [] }) {
                                             <Input type="number" placeholder="500,000" />
                                         </div>
                                     </div>
-                                    
+
                                     <div>
                                         <label className="text-sm font-medium mb-2 block">Årsmodell</label>
                                         <Select>
@@ -104,14 +144,120 @@ export default function MarketingHome({ cars = [], featuredCars = [] }) {
                                             </SelectContent>
                                         </Select>
                                     </div>
-                                    
+
                                     <Button className="w-full" size="lg">
                                         <Search className="mr-2 h-4 w-4" />
                                         Sök bilar
                                     </Button>
                                 </CardContent>
                             </Card>
+                        </div> */}
+                    </div>
+                </div>
+            </section>
+
+            {/* Statistics Section */}
+            {/* <section className="py-12 border-b bg-muted/20">
+                <div className="container mx-auto px-4">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                        <div className="text-center">
+                            <div className="text-3xl lg:text-4xl font-bold text-primary mb-2">
+                                50,000+
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                                Nöjda kunder
+                            </div>
                         </div>
+                        <div className="text-center">
+                            <div className="text-3xl lg:text-4xl font-bold text-primary mb-2">
+                                10,000+
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                                Bilar sålda
+                            </div>
+                        </div>
+                        <div className="text-center">
+                            <div className="text-3xl lg:text-4xl font-bold text-primary mb-2">
+                                500+
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                                Bilhandlare
+                            </div>
+                        </div>
+                        <div className="text-center">
+                            <div className="text-3xl lg:text-4xl font-bold text-primary mb-2">
+                                4.8/5
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                                Kundbetyg
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section> */}
+
+            {/* How It Works Section */}
+            <section className="py-20 bg-background">
+                <div className="container mx-auto px-4">
+                    <div className="text-center mb-16">
+                        <h2 className="text-3xl lg:text-5xl font-bold mb-4">
+                            Så fungerar det
+                        </h2>
+                        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                            Enkel process från start till mål – vi gör bilköp och försäljning transparent
+                        </p>
+                    </div>
+
+                    <div className="grid md:grid-cols-3 gap-12 max-w-6xl mx-auto">
+                        <div className="relative">
+                            <div className="flex flex-col items-center text-center">
+                                <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center mb-6">
+                                    <span className="text-3xl font-bold text-primary-foreground">1</span>
+                                </div>
+                                <h3 className="text-2xl font-bold mb-4">Välj din bil</h3>
+                                <p className="text-muted-foreground leading-relaxed">
+                                    Bläddra bland tusentals verifierade bilar eller sök efter din drömbil.
+                                    Filtrera efter märke, pris, bränsle och mer.
+                                </p>
+                            </div>
+                            {/* Connector line for desktop */}
+                            <div className="hidden md:block absolute top-10 left-[60%] w-[80%] h-0.5 bg-primary/20" />
+                        </div>
+
+                        <div className="relative">
+                            <div className="flex flex-col items-center text-center">
+                                <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center mb-6">
+                                    <span className="text-3xl font-bold text-primary-foreground">2</span>
+                                </div>
+                                <h3 className="text-2xl font-bold mb-4">Få erbjudanden</h3>
+                                <p className="text-muted-foreground leading-relaxed">
+                                    Hundratals bilhandlare konkurrerar om din affär.
+                                    Jämför priser och välj det bästa erbjudandet.
+                                </p>
+                            </div>
+                            {/* Connector line for desktop */}
+                            <div className="hidden md:block absolute top-10 left-[60%] w-[80%] h-0.5 bg-primary/20" />
+                        </div>
+
+                        <div className="flex flex-col items-center text-center">
+                            <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center mb-6">
+                                <span className="text-3xl font-bold text-primary-foreground">3</span>
+                            </div>
+                            <h3 className="text-2xl font-bold mb-4">Avsluta affären</h3>
+                            <p className="text-muted-foreground leading-relaxed">
+                                Vi hjälper dig genom hela processen – från provkörning
+                                till leverans. Trygg och säker affär garanterad.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="text-center mt-12">
+                        <Button size="lg" variant="outline" asChild>
+                            <Link href="/about">
+                                Läs mer om hur det fungerar
+                                <ArrowRight className="ml-2 h-5 w-5" />
+                            </Link>
+                        </Button>
                     </div>
                 </div>
             </section>
@@ -127,7 +273,7 @@ export default function MarketingHome({ cars = [], featuredCars = [] }) {
                             Vi gör bilköp och bilförsäljning enkelt, säkert och transparent
                         </p>
                     </div>
-                    
+
                     <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                         <div className="text-center">
                             <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -138,7 +284,7 @@ export default function MarketingHome({ cars = [], featuredCars = [] }) {
                                 Alla bilar genomgår noggrann kontroll och verifiering innan publicering
                             </p>
                         </div>
-                        
+
                         <div className="text-center">
                             <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                                 <Award className="h-8 w-8 text-primary" />
@@ -148,7 +294,7 @@ export default function MarketingHome({ cars = [], featuredCars = [] }) {
                                 Vi garanterar marknadens bästa priser genom vårt nätverk av återförsäljare
                             </p>
                         </div>
-                        
+
                         <div className="text-center">
                             <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                                 <Users className="h-8 w-8 text-primary" />
@@ -158,7 +304,7 @@ export default function MarketingHome({ cars = [], featuredCars = [] }) {
                                 Våra bilexperter hjälper dig genom hela köp- eller säljprocessen
                             </p>
                         </div>
-                        
+
                         <div className="text-center">
                             <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                                 <CheckCircle className="h-8 w-8 text-primary" />
@@ -191,7 +337,7 @@ export default function MarketingHome({ cars = [], featuredCars = [] }) {
                             </Link>
                         </Button>
                     </div>
-                    
+
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {featuredCars.length > 0 ? featuredCars.map((car) => (
                             <CarCard
@@ -233,7 +379,7 @@ export default function MarketingHome({ cars = [], featuredCars = [] }) {
             </section>
 
             {/* Needs Analysis CTA Section */}
-            <section className="py-20">
+            <section className="py-20 bg-muted/30">
                 <div className="container mx-auto px-4">
                     <div className="max-w-4xl mx-auto bg-gradient-to-r from-primary/10 to-primary/5 rounded-2xl p-12">
                         <div className="grid lg:grid-cols-2 gap-8 items-center">
@@ -242,8 +388,8 @@ export default function MarketingHome({ cars = [], featuredCars = [] }) {
                                     Osäker på vilken bil som passar dig?
                                 </h2>
                                 <p className="text-lg text-muted-foreground mb-6">
-                                    Vår behovsanalys hjälper dig hitta den perfekta bilen baserat på dina 
-                                    behov, budget och livsstil. Svara på några enkla frågor och få 
+                                    Vår behovsanalys hjälper dig hitta den perfekta bilen baserat på dina
+                                    behov, budget och livsstil. Svara på några enkla frågor och få
                                     personliga rekommendationer.
                                 </p>
                                 <Button size="lg" asChild>
@@ -284,11 +430,11 @@ export default function MarketingHome({ cars = [], featuredCars = [] }) {
                             Hittat en bil du vill köpa?
                         </h2>
                         <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                            Låt oss hjälpa dig med hela köpprocessen. Vi förhandlar pris, kontrollerar 
+                            Låt oss hjälpa dig med hela köpprocessen. Vi förhandlar pris, kontrollerar
                             bilens skick och säkerställer en trygg affär.
                         </p>
                     </div>
-                    
+
                     <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
                         <Card className="text-center">
                             <CardHeader>
@@ -306,7 +452,7 @@ export default function MarketingHome({ cars = [], featuredCars = [] }) {
                                 </Button>
                             </CardContent>
                         </Card>
-                        
+
                         <Card className="text-center">
                             <CardHeader>
                                 <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
@@ -321,7 +467,7 @@ export default function MarketingHome({ cars = [], featuredCars = [] }) {
                                 <p className="text-sm font-semibold text-primary">Spara upp till 20%</p>
                             </CardContent>
                         </Card>
-                        
+
                         <Card className="text-center">
                             <CardHeader>
                                 <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
@@ -337,7 +483,7 @@ export default function MarketingHome({ cars = [], featuredCars = [] }) {
                             </CardContent>
                         </Card>
                     </div>
-                    
+
                     <div className="text-center mt-8">
                         <Button size="lg" asChild>
                             <Link href="/car-deal">
@@ -371,6 +517,15 @@ export default function MarketingHome({ cars = [], featuredCars = [] }) {
                     </div>
                 </div>
             </section>
+
+            {/* Form Slide-in */}
+            {carFinderForm && (
+                <FormSlideIn
+                    open={showFormSlideIn}
+                    onClose={() => setShowFormSlideIn(false)}
+                    form={carFinderForm}
+                />
+            )}
         </MarketingLayout>
     );
 }
