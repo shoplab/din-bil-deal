@@ -48,7 +48,7 @@ export default function FormCreate() {
     setData('questions', newQuestions);
   };
 
-  const addOption = (questionIndex: number) => {
+  const addOption = (questionIndex) => {
     const newQuestions = [...data.questions];
     newQuestions[questionIndex].options.push({
       label: '',
@@ -60,7 +60,7 @@ export default function FormCreate() {
     setData('questions', newQuestions);
   };
 
-  const removeOption = (questionIndex: number, optionIndex: number) => {
+  const removeOption = (questionIndex, optionIndex) => {
     const newQuestions = [...data.questions];
     newQuestions[questionIndex].options = newQuestions[questionIndex].options
       .filter((_, i) => i !== optionIndex)
