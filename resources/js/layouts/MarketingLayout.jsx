@@ -6,7 +6,6 @@ import { useAppearance } from '@/hooks/use-appearance';
 import {
     Menu,
     X,
-    Car,
     Phone,
     Mail,
     MapPin,
@@ -25,11 +24,12 @@ export default function MarketingLayout({ children }) {
 
     const navigation = [
         { name: 'Hem', href: '/' },
-        { name: 'Bilar till salu', href: '/cars' },
+        { name: 'Köp bil', href: '/cars' },
         { name: 'Sälj din bil', href: '/sell' },
+        { name: 'Recensioner', href: '/cars' },
+        { name: 'Jämför bilar', href: '/cars' },
         { name: 'Finansiering', href: '/financing' },
         { name: 'Om oss', href: '/about' },
-        { name: 'Kontakt', href: '/contact' },
     ];
 
     const isActive = (href) => {
@@ -55,13 +55,14 @@ export default function MarketingLayout({ children }) {
         <div className="min-h-screen bg-background">
             {/* Header */}
             <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-                <div className="container mx-auto px-4 flex h-16 items-center">
+                <div className="container mx-auto px-4 flex h-24 items-center">
                     {/* Logo */}
-                    <Link href="/" className="flex items-center space-x-2">
-                        <Car className="h-8 w-8 text-primary" />
-                        <span className="text-xl font-bold text-foreground">
-                            Din Bil Deal
-                        </span>
+                    <Link href="/" className="flex items-center">
+                        <img
+                            src="/img/dinbildeal.svg"
+                            alt="Din Bil Deal"
+                            className="h-16 w-auto"
+                        />
                     </Link>
 
                     {/* Desktop Navigation */}
@@ -183,9 +184,12 @@ export default function MarketingLayout({ children }) {
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                         {/* Company Info */}
                         <div className="col-span-1">
-                            <Link href="/" className="flex items-center space-x-2 mb-4">
-                                <Car className="h-6 w-6 text-primary" />
-                                <span className="text-lg font-bold">Din Bil Deal</span>
+                            <Link href="/" className="flex items-center mb-4">
+                                <img
+                                    src="/img/dinbildeal.svg"
+                                    alt="Din Bil Deal"
+                                    className="h-8 w-auto"
+                                />
                             </Link>
                             <p className="text-sm text-muted-foreground mb-4">
                                 Din pålitliga partner för bilköp och bilförsäljning i Sverige.

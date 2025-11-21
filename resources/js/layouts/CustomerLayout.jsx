@@ -11,14 +11,13 @@ import {
     DropdownMenuTrigger 
 } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { 
-    Car, 
-    Heart, 
-    Calendar, 
-    MessageSquare, 
-    User, 
-    Settings, 
-    LogOut, 
+import {
+    Heart,
+    Calendar,
+    MessageSquare,
+    User,
+    Settings,
+    LogOut,
     Menu,
     Home,
     Bell
@@ -71,9 +70,12 @@ export default function CustomerLayout({ title, children }) {
                                 <SheetContent side="left" className="w-72">
                                     <div className="flex flex-col h-full">
                                         {/* Logo */}
-                                        <div className="flex items-center space-x-2 pb-6">
-                                            <Car className="h-8 w-8 text-blue-600" />
-                                            <span className="text-xl font-bold text-gray-900">Din Bil Deal</span>
+                                        <div className="flex items-center pb-6">
+                                            <img
+                                                src="/img/dinbildeal.svg"
+                                                alt="Din Bil Deal"
+                                                className="h-10 w-auto"
+                                            />
                                         </div>
                                         
                                         {/* Navigation */}
@@ -109,9 +111,12 @@ export default function CustomerLayout({ title, children }) {
                             </Sheet>
                             
                             {/* Logo */}
-                            <Link href="/" className="flex items-center space-x-2">
-                                <Car className="h-8 w-8 text-blue-600" />
-                                <span className="text-xl font-bold text-gray-900 hidden sm:block">Din Bil Deal</span>
+                            <Link href="/" className="flex items-center">
+                                <img
+                                    src="/img/dinbildeal.svg"
+                                    alt="Din Bil Deal"
+                                    className="h-10 w-auto"
+                                />
                             </Link>
                         </div>
 

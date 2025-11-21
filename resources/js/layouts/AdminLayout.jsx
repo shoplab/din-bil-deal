@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
-import { 
+import {
     LayoutDashboard,
     Car,
     Users,
@@ -19,15 +19,16 @@ import {
     LogOut,
     ChevronDown,
     UserCircle,
-    Building2,
     Target,
     TrendingUp,
     FileText,
     Mail,
     Calendar,
-    CreditCard
+    CreditCard,
+    ClipboardList
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Toaster } from '@/components/ui/sonner';
 
 const navigation = [
     {
@@ -80,6 +81,15 @@ const navigation = [
         ],
     },
     {
+        name: 'Formulär',
+        icon: ClipboardList,
+        current: false,
+        children: [
+            { name: 'Alla formulär', href: '/admin/forms' },
+            { name: 'Skapa formulär', href: '/admin/forms/create' },
+        ],
+    },
+    {
         name: 'Inställningar',
         href: '/admin/settings',
         icon: Settings,
@@ -112,8 +122,11 @@ export default function AdminLayout({ children, title }) {
                 <div className="fixed inset-y-0 left-0 flex w-full max-w-xs flex-col bg-white shadow-xl">
                     <div className="flex h-16 items-center justify-between px-4">
                         <Link href="/admin" className="flex items-center">
-                            <Building2 className="h-8 w-8 text-primary" />
-                            <span className="ml-2 text-xl font-bold">Din Bil Deal</span>
+                            <img
+                                src="/img/dinbildeal.svg"
+                                alt="Din Bil Deal"
+                                className="h-10 w-auto"
+                            />
                         </Link>
                         <Button variant="ghost" size="sm" onClick={() => setSidebarOpen(false)}>
                             <X className="h-6 w-6" />
@@ -169,8 +182,11 @@ export default function AdminLayout({ children, title }) {
                 <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 pb-4">
                     <div className="flex h-16 shrink-0 items-center">
                         <Link href="/admin" className="flex items-center">
-                            <Building2 className="h-8 w-8 text-primary" />
-                            <span className="ml-2 text-xl font-bold">Din Bil Deal</span>
+                            <img
+                                src="/img/dinbildeal.svg"
+                                alt="Din Bil Deal"
+                                className="h-10 w-auto"
+                            />
                         </Link>
                     </div>
                     <nav className="flex flex-1 flex-col">
@@ -280,17 +296,18 @@ export default function AdminLayout({ children, title }) {
                 {/* Page content */}
                 <main className="py-10">
                     <div className="px-4 sm:px-6 lg:px-8">
-                        {title && (
+                        {/* {title && (
                             <div className="mb-8">
                                 <h1 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
                                     {title}
                                 </h1>
                             </div>
-                        )}
+                        )} */}
                         {children}
                     </div>
                 </main>
             </div>
+            <Toaster position="top-center" />
         </div>
     );
 }
