@@ -21,22 +21,34 @@ class CarSalesSeeder extends Seeder
     {
         $this->command->info('Creating users...');
         $this->createUsers();
-        
+
         $this->command->info('Creating cars...');
         $this->createCars();
-        
+
         $this->command->info('Creating leads...');
         $this->createLeads();
-        
+
         $this->command->info('Creating deals and activities...');
         $this->createDealsAndActivities();
-        
+
         $this->command->info('Car sales data seeded successfully!');
     }
-    
+
     private function createUsers(): void
     {
         // Create admin user
+        User::firstOrCreate(
+            ['email' => 'alexander.fugah@shoplab.se'],
+            [
+                'name' => 'Alexander Fugah',
+                'email' => 'alexander.fugah@shoplab.se',
+                'password' => Hash::make('password'),
+                'role' => 'admin',
+                'email_verified_at' => now(),
+            ]
+        );
+
+        // Create standard admin user for easy access
         User::firstOrCreate(
             ['email' => 'admin@dinbildeal.se'],
             [
@@ -47,7 +59,7 @@ class CarSalesSeeder extends Seeder
                 'email_verified_at' => now(),
             ]
         );
-        
+
         // Create manager
         User::firstOrCreate(
             ['email' => 'manager@dinbildeal.se'],
@@ -59,7 +71,7 @@ class CarSalesSeeder extends Seeder
                 'email_verified_at' => now(),
             ]
         );
-        
+
         // Create sales agents
         $agents = [
             ['name' => 'Erik Andersson', 'email' => 'erik@dinbildeal.se', 'employee_id' => 'AGT001'],
@@ -67,9 +79,9 @@ class CarSalesSeeder extends Seeder
             ['name' => 'Lars Karlsson', 'email' => 'lars@dinbildeal.se', 'employee_id' => 'AGT003'],
             ['name' => 'Maria Nilsson', 'email' => 'maria@dinbildeal.se', 'employee_id' => 'AGT004'],
         ];
-        
+
         $managerId = User::where('role', 'manager')->first()->id;
-        
+
         foreach ($agents as $agentData) {
             User::firstOrCreate(
                 ['email' => $agentData['email']],
@@ -83,32 +95,32 @@ class CarSalesSeeder extends Seeder
                 ]
             );
         }
-        
+
         // Create some customer users
         User::factory(20)->create([
             'role' => 'customer',
             'email_verified_at' => now(),
         ]);
     }
-    
+
     private function createCars(): void
     {
         // Create a variety of cars
         Car::factory(50)->create();
-        
+
         // Create some featured cars
         Car::factory(10)->featured()->create();
-        
+
         // Create some luxury cars
         Car::factory(8)->luxury()->create();
-        
+
         // Create some electric cars
         Car::factory(6)->electric()->create();
-        
+
         // Create some sold cars
         Car::factory(15)->sold()->create();
     }
-    
+
     private function createLeads(): void
     {
         // Create various types of leads
@@ -118,18 +130,18 @@ class CarSalesSeeder extends Seeder
         Lead::factory(8)->converted()->create(); // Converted leads
         Lead::factory(12)->lost()->create(); // Lost leads
     }
-    
+
     private function createDealsAndActivities(): void
     {
         $leads = Lead::whereIn('status', ['in_process', 'finance', 'done'])->get();
         $cars = Car::where('status', 'available')->take(30)->get();
         $agents = User::where('role', 'agent')->get();
-        
+
         foreach ($leads as $lead) {
             if ($cars->isNotEmpty() && $agents->isNotEmpty()) {
                 $car = $cars->random();
                 $agent = $agents->random();
-                
+
                 // Create deal
                 $deal = Deal::create([
                     'lead_id' => $lead->id,
@@ -141,10 +153,10 @@ class CarSalesSeeder extends Seeder
                     'commission_rate' => 0.01, // 1%
                     'expected_close_date' => fake()->dateTimeBetween('now', '+60 days'),
                 ]);
-                
+
                 // Create some activities for this lead
                 $this->createActivitiesForLead($lead, $agent, $deal);
-                
+
                 // Some leads might have needs analysis
                 // TODO: Fix field mappings for needs analysis
                 /*if (fake()->boolean(60)) {
@@ -170,7 +182,7 @@ class CarSalesSeeder extends Seeder
                         'reliability_priority' => fake()->randomElement(NeedsAnalysis::getAllPriorities()),
                         'safety_priority' => fake()->randomElement(NeedsAnalysis::getAllPriorities()),
                         'purchase_timeline' => fake()->randomElement([
-                            NeedsAnalysis::TIMELINE_1_MONTH, 
+                            NeedsAnalysis::TIMELINE_1_MONTH,
                             NeedsAnalysis::TIMELINE_3_MONTHS,
                             NeedsAnalysis::TIMELINE_6_MONTHS
                         ]),
@@ -181,11 +193,11 @@ class CarSalesSeeder extends Seeder
             }
         }
     }
-    
+
     private function createActivitiesForLead(Lead $lead, User $agent, Deal $deal = null): void
     {
         $activityCount = fake()->numberBetween(1, 8);
-        
+
         for ($i = 0; $i < $activityCount; $i++) {
             $activityType = fake()->randomElement([
                 'call_made',
@@ -195,10 +207,10 @@ class CarSalesSeeder extends Seeder
                 'follow_up_scheduled',
                 'note_added',
             ]);
-            
+
             $isCompleted = fake()->boolean(80); // 80% of activities are completed
             $activityDate = fake()->dateTimeBetween('-30 days', $isCompleted ? 'now' : '+14 days');
-            
+
             LeadActivity::create([
                 'lead_id' => $lead->id,
                 'user_id' => $agent->id,
@@ -211,7 +223,7 @@ class CarSalesSeeder extends Seeder
             ]);
         }
     }
-    
+
     private function generateActivitySubject(string $activityType): string
     {
         $subjects = [
@@ -252,7 +264,7 @@ class CarSalesSeeder extends Seeder
                 'Viktiga detaljer'
             ],
         ];
-        
+
         return match($activityType) {
             'call_made' => fake()->randomElement(['Uppföljningssamtal', 'Kontakt ang. bil', 'Telefonmöte']),
             'email_sent' => fake()->randomElement(['Bilförslag skickat', 'Prisinformation', 'Svar på förfrågan']),

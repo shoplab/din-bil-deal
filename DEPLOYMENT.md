@@ -23,7 +23,9 @@ This guide covers deploying the Din Bil Deal application to Laravel Cloud.
 # Run migrations
 php artisan migrate --force
 
-# Seed initial data (if needed)
+# Seed initial data (ONLY on first deployment or when explicitly needed)
+# Note: Do NOT run seeders on every deployment as they use firstOrCreate
+# which is safe, but unnecessary. Run manually when needed:
 php artisan db:seed --force
 ```
 
@@ -148,6 +150,10 @@ php artisan icons:cache
 
 # Run migrations
 php artisan migrate --force
+
+# Note: Seeders are NOT included in build commands
+# Run seeders manually only when needed (first deployment, resetting data, etc.)
+# php artisan db:seed --force
 ```
 
 ### Queue Workers
