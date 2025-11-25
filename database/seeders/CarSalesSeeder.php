@@ -194,7 +194,7 @@ class CarSalesSeeder extends Seeder
         }
     }
 
-    private function createActivitiesForLead(Lead $lead, User $agent, Deal $deal = null): void
+    private function createActivitiesForLead(Lead $lead, User $agent, ?Deal $deal = null): void
     {
         $activityCount = fake()->numberBetween(1, 8);
 
