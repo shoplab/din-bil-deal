@@ -260,14 +260,14 @@ export default function Dashboard({ stats, recentActivity, monthlyStats }) {
                                 <div key={deal.id} className="flex items-center space-x-4">
                                     <div className="min-w-0 flex-1">
                                         <p className="text-sm font-medium text-gray-900 truncate">
-                                            {deal.title}
+                                            {deal.lead_name} - {deal.car_info}
                                         </p>
                                         <p className="text-sm text-gray-500">
                                             {deal.deal_value ? deal.deal_value.toLocaleString() : '0'} SEK • {formatDate(deal.created_at)}
                                         </p>
                                     </div>
-                                    <Badge className={getStatusColor(deal.stage)}>
-                                        {deal.stage}
+                                    <Badge className={getStatusColor(deal.status)}>
+                                        {deal.status}
                                     </Badge>
                                 </div>
                             ))}

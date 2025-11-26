@@ -145,7 +145,7 @@ class Deal extends Model
     }
 
     // Business Logic Methods
-    public function updateStatus(string $newStatus, string $notes = null): bool
+    public function updateStatus(string $newStatus, ?string $notes = null): bool
     {
         if (!$this->canTransitionTo($newStatus)) {
             return false;
@@ -187,7 +187,7 @@ class Deal extends Model
         return self::$statusTransitions[$this->status] ?? [];
     }
 
-    public function isClosedStatus(string $status = null): bool
+    public function isClosedStatus(?string $status = null): bool
     {
         $checkStatus = $status ?? $this->status;
         return in_array($checkStatus, [self::STATUS_CLOSED_WON, self::STATUS_CLOSED_LOST]);

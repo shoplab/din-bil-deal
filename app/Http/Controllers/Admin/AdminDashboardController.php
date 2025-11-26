@@ -95,9 +95,8 @@ class AdminDashboardController extends Controller
             ->map(function ($deal) {
                 return [
                     'id' => $deal->id,
-                    'title' => $deal->title,
-                    'stage' => $deal->stage,
-                    'deal_value' => $deal->deal_value,
+                    'status' => $deal->status,
+                    'deal_value' => $deal->final_price ?? $deal->vehicle_price ?? 0,
                     'probability' => $deal->probability,
                     'created_at' => $deal->created_at,
                     'lead_name' => $deal->lead->name ?? 'Unknown',
@@ -115,14 +114,14 @@ class AdminDashboardController extends Controller
                 'leads' => Lead::whereYear('created_at', $date->year)
                     ->whereMonth('created_at', $date->month)
                     ->count(),
-                'deals' => Deal::where('stage', 'closed_won')
+                'deals' => Deal::where('status', 'closed_won')
                     ->whereYear('updated_at', $date->year)
                     ->whereMonth('updated_at', $date->month)
                     ->count(),
-                'revenue' => Deal::where('stage', 'closed_won')
+                'revenue' => Deal::where('status', 'closed_won')
                     ->whereYear('updated_at', $date->year)
                     ->whereMonth('updated_at', $date->month)
-                    ->sum('deal_value'),
+                    ->sum('final_price'),
                 'cars_sold' => Car::where('status', 'sold')
                     ->whereYear('updated_at', $date->year)
                     ->whereMonth('updated_at', $date->month)
