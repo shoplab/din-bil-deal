@@ -1,0 +1,53 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
+class Permission extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'name',
+        'slug',
+        'group',
+        'description',
+    ];
+
+    /**
+     * Get the roles that have this permission.
+     */
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class)->withTimestamps();
+    }
+
+    // Scopes
+
+    /**
+     * Scope to filter by group.
+     */
+    public function scopeInGroup($query, string $group)
+    {
+        return $query->where('group', $group);
+    }
+
+    /**
+     * Get permissions grouped by their group.
+     */
+    public static function getAllGrouped(): array
+    {
+        return self::all()->groupBy('group')->toArray();
+    }
+
+    /**
+     * Get all available permission groups.
+     */
+    public static function getGroups(): array
+    {
+        return self::distinct()->pluck('group')->filter()->toArray();
+    }
+}

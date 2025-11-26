@@ -13,9 +13,12 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     use HasFactory, Notifiable;
 
-    // User role constants
+    // Legacy role constants (kept for backwards compatibility with role column)
     public const ROLE_ADMIN = 'admin';
     public const ROLE_CUSTOMER = 'customer';
+    public const ROLE_SUPER_USER = 'super_user';
+    public const ROLE_MANAGER = 'manager';
+    public const ROLE_AGENT = 'agent';
 
     /**
      * The attributes that are mass assignable.
@@ -28,6 +31,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'phone',
         'role',
+        'is_active',
         'date_of_birth',
         'address',
         'city',
@@ -59,10 +63,19 @@ class User extends Authenticatable implements MustVerifyEmail
             'password' => 'hashed',
             'date_of_birth' => 'date',
             'marketing_consent' => 'boolean',
+            'is_active' => 'boolean',
         ];
     }
 
     // Relationships
+
+    /**
+     * Get the roles for the user.
+     */
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class)->withTimestamps();
+    }
 
     /**
      * Get the leads for the user (when user is a customer)
@@ -132,11 +145,16 @@ class User extends Authenticatable implements MustVerifyEmail
     // Role-based methods
 
     /**
-     * Check if user is an admin
+     * Check if user is an admin (has admin role or legacy role column)
      */
     public function isAdmin(): bool
     {
-        return $this->role === self::ROLE_ADMIN;
+        // Check new role system first
+        if ($this->roles()->whereIn('slug', [Role::ADMIN, Role::SUPER_USER, Role::MANAGER])->exists()) {
+            return true;
+        }
+        // Fall back to legacy role column
+        return in_array($this->role, [self::ROLE_ADMIN, self::ROLE_SUPER_USER, self::ROLE_MANAGER]);
     }
 
     /**
@@ -144,18 +162,134 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function isCustomer(): bool
     {
+        // Check new role system first
+        if ($this->roles()->exists()) {
+            return $this->roles()->where('slug', Role::CUSTOMER)->exists();
+        }
+        // Fall back to legacy role column
         return $this->role === self::ROLE_CUSTOMER;
     }
 
     /**
-     * Get all available roles
+     * Check if user is a super user.
+     */
+    public function isSuperUser(): bool
+    {
+        return $this->roles()->where('is_super_user', true)->exists();
+    }
+
+    /**
+     * Check if user has a specific role.
+     */
+    public function hasRole(string $roleSlug): bool
+    {
+        return $this->roles()->where('slug', $roleSlug)->exists();
+    }
+
+    /**
+     * Check if user has any of the given roles.
+     */
+    public function hasAnyRole(array $roleSlugs): bool
+    {
+        return $this->roles()->whereIn('slug', $roleSlugs)->exists();
+    }
+
+    /**
+     * Check if user has a specific permission.
+     */
+    public function hasPermission(string $permissionSlug): bool
+    {
+        // Super users have all permissions
+        if ($this->isSuperUser()) {
+            return true;
+        }
+
+        foreach ($this->roles as $role) {
+            if ($role->hasPermission($permissionSlug)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if user has any of the given permissions.
+     */
+    public function hasAnyPermission(array $permissionSlugs): bool
+    {
+        if ($this->isSuperUser()) {
+            return true;
+        }
+
+        foreach ($this->roles as $role) {
+            if ($role->hasAnyPermission($permissionSlugs)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Assign a role to the user.
+     */
+    public function assignRole(Role|string $role): void
+    {
+        if (is_string($role)) {
+            $role = Role::where('slug', $role)->firstOrFail();
+        }
+        $this->roles()->syncWithoutDetaching([$role->id]);
+    }
+
+    /**
+     * Remove a role from the user.
+     */
+    public function removeRole(Role|string $role): void
+    {
+        if (is_string($role)) {
+            $role = Role::where('slug', $role)->firstOrFail();
+        }
+        $this->roles()->detach($role->id);
+    }
+
+    /**
+     * Sync roles for the user.
+     */
+    public function syncRoles(array $roleIds): void
+    {
+        $this->roles()->sync($roleIds);
+    }
+
+    /**
+     * Check if user can be deleted.
+     * Super users cannot be deleted.
+     */
+    public function canBeDeleted(): bool
+    {
+        return !$this->isSuperUser();
+    }
+
+    /**
+     * Get all available roles (legacy - from constants)
      */
     public static function getAllRoles(): array
     {
         return [
+            self::ROLE_SUPER_USER,
             self::ROLE_ADMIN,
+            self::ROLE_MANAGER,
+            self::ROLE_AGENT,
             self::ROLE_CUSTOMER,
         ];
+    }
+
+    /**
+     * Get all available role models
+     */
+    public static function getAvailableRoles(): \Illuminate\Database\Eloquent\Collection
+    {
+        return Role::all();
     }
 
     // Customer-specific methods

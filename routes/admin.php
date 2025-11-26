@@ -5,6 +5,12 @@ use App\Http\Controllers\Admin\CarController;
 use App\Http\Controllers\Admin\LeadController;
 use App\Http\Controllers\Admin\DealController;
 use App\Http\Controllers\Admin\AnalyticsController;
+use App\Http\Controllers\Admin\Settings\SettingsController;
+use App\Http\Controllers\Admin\Settings\UserSettingsController;
+use App\Http\Controllers\Admin\Settings\RoleController;
+use App\Http\Controllers\Admin\Settings\PermissionController;
+use App\Http\Controllers\Admin\Settings\GeneralSettingsController;
+use App\Http\Controllers\Admin\Settings\EmailTemplateController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -101,20 +107,42 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     
     // Settings & Configuration
     Route::prefix('settings')->name('settings.')->group(function () {
-        Route::get('/', function () {
-            return inertia('Admin/Settings/Index');
-        })->name('index');
-        
-        Route::get('/general', function () {
-            return inertia('Admin/Settings/General');
-        })->name('general');
-        
-        Route::get('/users', function () {
-            return inertia('Admin/Settings/Users');
-        })->name('users');
-        
-        Route::get('/integrations', function () {
-            return inertia('Admin/Settings/Integrations');
-        })->name('integrations');
+        // Settings Index
+        Route::get('/', [SettingsController::class, 'index'])->name('index');
+
+        // General Settings
+        Route::get('/general', [GeneralSettingsController::class, 'index'])->name('general');
+        Route::put('/general', [GeneralSettingsController::class, 'update'])->name('general.update');
+
+        // User Management (Admin Users)
+        Route::get('/users', [UserSettingsController::class, 'index'])->name('users');
+        Route::post('/users', [UserSettingsController::class, 'store'])->name('users.store');
+        Route::put('/users/{user}', [UserSettingsController::class, 'update'])->name('users.update');
+        Route::delete('/users/{user}', [UserSettingsController::class, 'destroy'])->name('users.destroy');
+        Route::post('/users/{user}/reset-password', [UserSettingsController::class, 'resetPassword'])->name('users.reset-password');
+        Route::post('/users/{user}/send-reset', [UserSettingsController::class, 'sendPasswordReset'])->name('users.send-reset');
+        Route::patch('/users/{user}/toggle-active', [UserSettingsController::class, 'toggleActive'])->name('users.toggle-active');
+
+        // Roles Management
+        Route::get('/roles', [RoleController::class, 'index'])->name('roles');
+        Route::get('/roles/create', [RoleController::class, 'create'])->name('roles.create');
+        Route::post('/roles', [RoleController::class, 'store'])->name('roles.store');
+        Route::get('/roles/{role}/edit', [RoleController::class, 'edit'])->name('roles.edit');
+        Route::put('/roles/{role}', [RoleController::class, 'update'])->name('roles.update');
+        Route::delete('/roles/{role}', [RoleController::class, 'destroy'])->name('roles.destroy');
+
+        // Permissions Management
+        Route::get('/permissions', [PermissionController::class, 'index'])->name('permissions');
+        Route::put('/permissions/role/{role}', [PermissionController::class, 'updateRolePermissions'])->name('permissions.role.update');
+
+        // Email Templates
+        Route::get('/templates', [EmailTemplateController::class, 'index'])->name('templates');
+        Route::get('/templates/create', [EmailTemplateController::class, 'create'])->name('templates.create');
+        Route::post('/templates', [EmailTemplateController::class, 'store'])->name('templates.store');
+        Route::get('/templates/{template}/edit', [EmailTemplateController::class, 'edit'])->name('templates.edit');
+        Route::put('/templates/{template}', [EmailTemplateController::class, 'update'])->name('templates.update');
+        Route::delete('/templates/{template}', [EmailTemplateController::class, 'destroy'])->name('templates.destroy');
+        Route::post('/templates/{template}/preview', [EmailTemplateController::class, 'preview'])->name('templates.preview');
+        Route::patch('/templates/{template}/toggle-active', [EmailTemplateController::class, 'toggleActive'])->name('templates.toggle-active');
     });
 });
