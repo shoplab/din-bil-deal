@@ -64,16 +64,25 @@ export default function Dashboard({ stats, recentActivity, monthlyStats }) {
 
     const getStatusColor = (status) => {
         const colors = {
+            // Lead statuses
             'new': 'bg-blue-100 text-blue-800',
             'qualified': 'bg-green-100 text-green-800',
             'contacted': 'bg-yellow-100 text-yellow-800',
             'converted': 'bg-purple-100 text-purple-800',
+            // Car statuses
             'available': 'bg-green-100 text-green-800',
             'reserved': 'bg-yellow-100 text-yellow-800',
             'sold': 'bg-gray-100 text-gray-800',
-            'negotiating': 'bg-blue-100 text-blue-800',
-            'contract_review': 'bg-yellow-100 text-yellow-800',
-            'financing': 'bg-orange-100 text-orange-800',
+            // Deal statuses
+            'inquiry': 'bg-blue-100 text-blue-800',
+            'viewing_scheduled': 'bg-yellow-100 text-yellow-800',
+            'viewed': 'bg-orange-100 text-orange-800',
+            'test_drive': 'bg-purple-100 text-purple-800',
+            'negotiation': 'bg-pink-100 text-pink-800',
+            'proposal': 'bg-indigo-100 text-indigo-800',
+            'contract': 'bg-violet-100 text-violet-800',
+            'financing': 'bg-amber-100 text-amber-800',
+            'documentation': 'bg-lime-100 text-lime-800',
             'closed_won': 'bg-green-100 text-green-800',
             'closed_lost': 'bg-red-100 text-red-800'
         };
@@ -260,14 +269,14 @@ export default function Dashboard({ stats, recentActivity, monthlyStats }) {
                                 <div key={deal.id} className="flex items-center space-x-4">
                                     <div className="min-w-0 flex-1">
                                         <p className="text-sm font-medium text-gray-900 truncate">
-                                            {deal.title}
+                                            {deal.car_info || deal.lead_name}
                                         </p>
                                         <p className="text-sm text-gray-500">
-                                            {deal.deal_value ? deal.deal_value.toLocaleString() : '0'} SEK • {formatDate(deal.created_at)}
+                                            {deal.value ? deal.value.toLocaleString() : '0'} SEK • {formatDate(deal.created_at)}
                                         </p>
                                     </div>
-                                    <Badge className={getStatusColor(deal.stage)}>
-                                        {deal.stage}
+                                    <Badge className={getStatusColor(deal.status)}>
+                                        {deal.status_label}
                                     </Badge>
                                 </div>
                             ))}

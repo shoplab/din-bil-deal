@@ -95,9 +95,9 @@ class AdminDashboardController extends Controller
             ->map(function ($deal) {
                 return [
                     'id' => $deal->id,
-                    'title' => $deal->title,
-                    'stage' => $deal->stage,
-                    'deal_value' => $deal->deal_value,
+                    'status' => $deal->status,
+                    'status_label' => $deal->getStatusLabel(),
+                    'value' => $deal->final_price ?? $deal->vehicle_price,
                     'probability' => $deal->probability,
                     'created_at' => $deal->created_at,
                     'lead_name' => $deal->lead->name ?? 'Unknown',
@@ -115,14 +115,14 @@ class AdminDashboardController extends Controller
                 'leads' => Lead::whereYear('created_at', $date->year)
                     ->whereMonth('created_at', $date->month)
                     ->count(),
-                'deals' => Deal::where('stage', 'closed_won')
-                    ->whereYear('updated_at', $date->year)
-                    ->whereMonth('updated_at', $date->month)
+                'deals' => Deal::won()
+                    ->whereYear('closed_at', $date->year)
+                    ->whereMonth('closed_at', $date->month)
                     ->count(),
-                'revenue' => Deal::where('stage', 'closed_won')
-                    ->whereYear('updated_at', $date->year)
-                    ->whereMonth('updated_at', $date->month)
-                    ->sum('deal_value'),
+                'revenue' => Deal::won()
+                    ->whereYear('closed_at', $date->year)
+                    ->whereMonth('closed_at', $date->month)
+                    ->sum('final_price'),
                 'cars_sold' => Car::where('status', 'sold')
                     ->whereYear('updated_at', $date->year)
                     ->whereMonth('updated_at', $date->month)
